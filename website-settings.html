@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الجدول - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles-additions.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">Al-Daoudi<span>Club</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="services.html">الخدمات</a></li>
+      <li><a href="schedule.html">الجدول</a></li>
+      <li><a href="membership.html">الاشتراكات</a></li>
+      <li><a href="contact.html">اتصل بنا</a></li>
+      <li><a href="messages.html">الرسائل</a></li>
+      <li><a href="admin.html" class="btn-login">لوحة التحكم</a></li>
+    </ul>
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1>جدول الحصص</h1>
+    <p>ابحث عن الحصة المناسبة لأهدافك الصحية</p>
+  </header>
+
+  <!-- Schedule Section -->
+  <section class="section">
+    <div class="container">
+      <!-- Gender Filter -->
+      <div class="gender-filter">
+        <button class="gender-btn active" data-gender="all">
+          <span class="material-icons">groups</span>
+          الكل
+        </button>
+        <button class="gender-btn" data-gender="male">
+          <span class="material-icons">man</span>
+          الرجال
+        </button>
+        <button class="gender-btn" data-gender="female">
+          <span class="material-icons">woman</span>
+          النساء
+        </button>
+      </div>
+      
+      <!-- Day Filter -->
+      <div class="schedule-filters">
+        <button class="filter-btn active" data-day="all">كل الأيام</button>
+        <button class="filter-btn" data-day="Monday">الاثنين</button>
+        <button class="filter-btn" data-day="Tuesday">الثلاثاء</button>
+        <button class="filter-btn" data-day="Wednesday">الأربعاء</button>
+        <button class="filter-btn" data-day="Thursday">الخميس</button>
+        <button class="filter-btn" data-day="Friday">الجمعة</button>
+        <button class="filter-btn" data-day="Saturday">السبت</button>
+        <button class="filter-btn" data-day="Sunday">الأحد</button>
+      </div>
+      
+      <div class="schedule-table">
+        <table>
+          <thead>
+            <tr>
+              <th>الجنس</th>
+              <th>اسم الحصة</th>
+              <th>المدرب</th>
+              <th>اليوم</th>
+              <th>الوقت</th>
+              <th>المدة</th>
+              <th>السعة</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-body">
+            <!-- Classes will be loaded dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Al-Daoudi Bodybuilding Club</h3>
+        <p>غير حياتك، غير مستقبلك.</p>
+        <div class="social-links">
+          <a href="#"><span class="material-icons">facebook</span></a>
+          <a href="#"><span class="material-icons">instagram</span></a>
+          <a href="#"><span class="material-icons">twitter</span></a>
+          <a href="#"><span class="material-icons">youtube</span></a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h3>روابط سريعة</h3>
+        <ul>
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="services.html">الخدمات</a></li>
+          <li><a href="schedule.html">الجدول</a></li>
+          <li><a href="membership.html">الاشتراكات</a></li>
+          <li><a href="contact.html">اتصل بنا</a></li>
+          <li><a href="messages.html">الرسائل</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>معلومات الاتصال</h3>
+        <p id="footer-address"><span class="material-icons" style="font-size:1rem; vertical-align:middle;">location_on</span> المغرب، الدار البيضاء</p>
+        <p id="footer-phone"><span class="material-icons" style="font-size:1rem; vertical-align:middle;">phone</span> 06 33 37 77 22</p>
+        <p id="footer-email"><span class="material-icons" style="font-size:1rem; vertical-align:middle;">email</span> Clubsportdaoudi2000@gmail.com</p>
+      </div>
+      <div class="footer-section">
+        <h3>ساعات العمل</h3>
+        <p id="hours-mon-men">الاثنين (الرجال): 6صباحاً - 12 ظهراً</p>
+        <p id="hours-mon-women">الاثنين (النساء): 12 ظهراً - 4 عصراً</p>
+        <p id="hours-weekdays">الثلاثاء - الجمعة: 6 صباحاً - 11 مساءً</p>
+        <p id="hours-weekend">السبت - الأحد: 8 صباحاً - 8 مساءً</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Al-Daoudi Bodybuilding Club. جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Day names mapping
+    const dayNames = {
+      'Monday': 'الاثنين',
+      'Tuesday': 'الثلاثاء',
+      'Wednesday': 'الأربعاء',
+      'Thursday': 'الخميس',
+      'Friday': 'الجمعة',
+      'Saturday': 'السبت',
+      'Sunday': 'الأحد'
+    };
+
+    // Gender icons
+    const genderIcons = {
+      'male': '👨',
+      'female': '👩',
+      'all': '👥'
+    };
+
+    // Current filters
+    let currentGender = 'all';
+    let currentDay = 'all';
+
+    // Load dynamic data
+    document.addEventListener('DOMContentLoaded', function() {
+      loadWebsiteSettings();
+      loadDynamicSchedule();
+    });
+
+    // Load website settings
+    function loadWebsiteSettings() {
+      const settings = JSON.parse(localStorage.getItem('gym_site_settings'));
+      if (settings) {
+        if (settings.siteAddress) {
+          const el = document.getElementById('footer-address');
+          if (el) el.innerHTML = '<span class="material-icons" style="font-size:1rem; vertical-align:middle;">location_on</span> ' + settings.siteAddress;
+        }
+        if (settings.sitePhone) {
+          const el = document.getElementById('footer-phone');
+          if (el) el.innerHTML = '<span class="material-icons" style="font-size:1rem; vertical-align:middle;">phone</span> ' + settings.sitePhone;
+        }
+        if (settings.siteEmail) {
+          const el = document.getElementById('footer-email');
+          if (el) el.innerHTML = '<span class="material-icons" style="font-size:1rem; vertical-align:middle;">email</span> ' + settings.siteEmail;
+        }
+        if (settings.hoursMondayMen) {
+          const el = document.getElementById('hours-mon-men');
+          if (el) el.textContent = 'الاثنين (الرجال): ' + settings.hoursMondayMen;
+        }
+        if (settings.hoursMondayWomen) {
+          const el = document.getElementById('hours-mon-women');
+          if (el) el.textContent = 'الاثنين (النساء): ' + settings.hoursMondayWomen;
+        }
+        if (settings.hoursWeekdays) {
+          const el = document.getElementById('hours-weekdays');
+          if (el) el.textContent = 'الثلاثاء - الجمعة: ' + settings.hoursWeekdays;
+        }
+        if (settings.hoursWeekend) {
+          const el = document.getElementById('hours-weekend');
+          if (el) el.textContent = 'السبت - الأحد: ' + settings.hoursWeekend;
+        }
+      }
+    }
+
+    // Load schedule from localStorage or use default
+    function loadDynamicSchedule() {
+      let schedule = JSON.parse(localStorage.getItem('gym_schedule'));
+      
+      // If no localStorage data, use defaults
+      if (!schedule || schedule.length === 0) {
+        schedule = [
+          { id: 1, name: 'Yoga الصباح', instructor: 'سارة', day: 'Monday', time: '06:00', duration: 60, capacity: 20, gender: 'all' },
+          { id: 2, name: 'HIIT', instructor: 'أحمد', day: 'Monday', time: '18:00', duration: 45, capacity: 15, gender: 'male' },
+          { id: 3, name: 'تمارين قوى', instructor: 'خالد', day: 'Tuesday', time: '19:00', duration: 60, capacity: 10, gender: 'male' },
+          { id: 4, name: 'كروسف', instructor: 'محمد', day: 'Wednesday', time: '07:00', duration: 60, capacity: 25, gender: 'male' },
+          { id: 5, name: 'زومبا', instructor: 'سارة', day: 'Thursday', time: '18:30', duration: 45, capacity: 30, gender: 'female' },
+          { id: 6, name: 'تمارين قوى', instructor: 'خالد', day: 'Friday', time: '17:00', duration: 60, capacity: 12, gender: 'male' },
+          { id: 7, name: 'يوجا', instructor: 'نورة', day: 'Saturday', time: '09:00', duration: 60, capacity: 20, gender: 'female' },
+          { id: 8, name: 'إيروبيك', instructor: 'أحمد', day: 'Sunday', time: '10:00', duration: 45, capacity: 25, gender: 'all' }
+        ];
+      }
+      
+      // Add gender property if missing
+      schedule = schedule.map(s => ({
+        ...s,
+        gender: s.gender || 'all'
+      }));
+      
+      renderSchedule(schedule);
+      setupFilters();
+    }
+
+    // Render schedule table
+    function renderSchedule(schedule) {
+      const tbody = document.getElementById('schedule-body');
+      
+      // Filter schedule
+      let filtered = schedule;
+      if (currentGender !== 'all') {
+        filtered = filtered.filter(s => s.gender === currentGender || s.gender === 'all');
+      }
+      if (currentDay !== 'all') {
+        filtered = filtered.filter(s => s.day === currentDay);
+      }
+      
+      // Sort by day and time
+      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      filtered.sort((a, b) => {
+        const dayCompare = dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
+        if (dayCompare !== 0) return dayCompare;
+        return a.time.localeCompare(b.time);
+      });
+      
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.5);">لا توجد حصص في هذا اليوم</td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = filtered.map(s => `
+        <tr>
+          <td>${genderIcons[s.gender] || '👥'}</td>
+          <td>${s.name}</td>
+          <td>${s.instructor}</td>
+          <td>${dayNames[s.day] || s.day}</td>
+          <td>${s.time}</td>
+          <td>${s.duration} دقيقة</td>
+          <td>${s.capacity}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Setup filter buttons
+    function setupFilters() {
+      // Gender filters
+      document.querySelectorAll('.gender-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentGender = this.dataset.gender;
+          loadDynamicSchedule();
+        });
+      });
+
+      // Day filters
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentDay = this.dataset.day;
+          loadDynamicSchedule();
+        });
+      });
+    }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم المساعد - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin-styles.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1a1a2e, #0f0f1a); min-height: 100vh; }
+    .admin-container { display: flex; min-height: 100vh; }
+    .sidebar { width: 280px; background: linear-gradient(180deg, #1a1a2e, #0f0f1a); padding: 2rem 1rem; color: white; }
+    .logo { text-align: center; font-size: 1.8rem; font-weight: bold; margin-bottom: 2rem; background: linear-gradient(135deg, #FF6B35, #ff8f5a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .menu { list-style: none; }
+    .menu li { margin-bottom: 0.5rem; }
+    .menu a { display: flex; align-items: center; gap: 1rem; padding: 1rem; color: #aaa; text-decoration: none; border-radius: 12px; transition: all 0.3s; }
+    .menu a:hover, .menu a.active { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+    .main { flex: 1; padding: 2rem; overflow-y: auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .header h1 { color: white; font-size: 1.8rem; }
+    .logout-btn { background: linear-gradient(135deg, #F44336, #E57373); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; font-weight: 600; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 1.8rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 1.5rem; }
+    .stat-icon { width: 65px; height: 65px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+    .stat-icon.orange { background: linear-gradient(135deg, #FF6B35, #ff8f5a); }
+    .stat-icon.green { background: linear-gradient(135deg, #4CAF50, #81C784); }
+    .stat-icon.blue { background: linear-gradient(135deg, #2196F3, #64B5F6); }
+    .stat-info h3 { color: white; font-size: 2rem; margin-bottom: 0.3rem; }
+    .stat-info p { color: rgba(255,255,255,0.6); font-size: 0.9rem; text-transform: uppercase; }
+    .card { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2rem; overflow: hidden; }
+    .card-header { padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+    .card-header h3 { color: white; }
+    .empty-state { text-align: center; padding: 3rem; color: rgba(255,255,255,0.5); }
+    .message-item { padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .message-item.unread { background: rgba(255,107,53,0.08); }
+    .subscription-name { color: white; font-weight: 600; }
+    .subscription-contact { color: rgba(255,255,255,0.5); font-size: 0.85rem; }
+    .subscription-details { color: rgba(255,255,255,0.8); line-height: 1.6; margin: 0.5rem 0; }
+    @media (max-width: 768px) { .admin-container { flex-direction: column; } .sidebar { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <aside class="sidebar">
+      <div class="logo">💪 Al-Daoudi Club</div>
+      <ul class="menu">
+        <li><a href="#" class="active" onclick="showPage('dashboard')">📊 الرئيسية</a></li>
+        <li><a href="#" onclick="showPage('members')">👥 الأعضاء</a></li>
+        <li><a href="#" onclick="showPage('messages')">📩 الرسائل</a></li>
+        <li><a href="index.html">🏠 الموقع</a></li>
+      </ul>
+    </aside>
+    <main class="main">
+      <div class="header">
+        <h1 id="page-title">🏋️ لوحة تحكم المساعد</h1>
+        <button class="logout-btn" onclick="logout()">🚪 خروج</button>
+      </div>
+      <div id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon orange">👥</div><div class="stat-info"><h3 id="total-members">0</h3><p>الأعضاء</p></div></div>
+          <div class="stat-card"><div class="stat-icon green">🏋️</div><div class="stat-info"><h3 id="total-classes">0</h3><p>الحصص</p></div></div>
+        </div>
+      </div>
+      <div id="page-messages" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>📩 الرسائل الواردة</h3>
+            <span id="unread-messages-count" style="background: #2196F3; color: white; padding: 0.3rem 0.8rem; border-radius: 20px;">0 غير مقروءة</span>
+          </div>
+          <div id="messages-list"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script>
+    if (localStorage.getItem('gym_assistant_logged') !== 'true') window.location.href = 'login.html';
+    const assistantName = localStorage.getItem('gym_assistant_name') || 'مساعد';
+    let members = JSON.parse(localStorage.getItem('gym_members')) || [];
+    let classes = JSON.parse(localStorage.getItem('gym_classes')) || [];
+    
+    function showPage(page) {
+      document.querySelectorAll('.main > div').forEach(d => d.style.display = 'none');
+      document.getElementById('page-' + page).style.display = 'block';
+      document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('page-title').textContent = page === 'messages' ? '📩 الرسائل' : '🏋️ لوحة تحكم المساعد';
+      if (page === 'dashboard') loadDashboard();
+      if (page === 'messages') loadMessages();
+    }
+    
+    function loadDashboard() {
+      document.getElementById('total-members').textContent = members.length;
+      document.getElementById('total-classes').textContent = classes.length;
+    }
+    
+    function loadMessages() {
+      fetch('/api/admin/messages').then(r => r.json()).then(data => {
+        const unread = data.filter(m => m.status === 'unread').length;
+        document.getElementById('unread-messages-count').textContent = unread + ' غير مقروءة';
+        const list = document.getElementById('messages-list');
+        if (!data.length) { list.innerHTML = '<div class="empty-state">لا توجد رسائل</div>'; return; }
+        list.innerHTML = data.map(m => '<div class="message-item '+(m.status==='unread'?'unread':'')+'"><div class="subscription-name">'+m.name+'</div><div class="subscription-contact">'+m.email+' | '+(m.phone||'بدون')+'</div><div class="subscription-details">'+m.message+'</div></div>').join('');
+      }).catch(e => {
+        const messages = JSON.parse(localStorage.getItem('gym_messages'))||[];
+        document.getElementById('unread-messages-count').textContent = messages.filter(m=>m.status==='unread').length + ' غير مقروءة';
+        const list = document.getElementById('messages-list');
+        list.innerHTML = messages.length ? messages.map(m=>'<div class="message-item"><div class="subscription-name">'+m.name+'</div><div class="subscription-details">'+m.message+'</div></div>').join('<div class="empty-state">لا توجد رسائل</div>');
+      });
+    }
+    
+    function logout() { localStorage.removeItem('gym_assistant_logged'); window.location.href = 'login.html'; }
+    loadDashboard();
+  </script>
+</body>
+</html>

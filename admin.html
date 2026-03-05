@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة الجدول - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin-styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); min-height: 100vh; }
+    
+    .admin-container { display: flex; min-height: 100vh; }
+    
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+      padding: 2rem 1rem;
+      color: white;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+    }
+    
+    .logo {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .menu { list-style: none; }
+    .menu li { margin-bottom: 0.5rem; }
+    .menu a {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      color: #aaa;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+    .menu a:hover, .menu a.active {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+    }
+    
+    .main {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .header h1 { color: white; font-size: 1.8rem; }
+    
+    .back-btn {
+      background: linear-gradient(135deg, #2196F3, #64B5F6);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .logout-btn {
+      background: linear-gradient(135deg, #F44336, #E57373);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-header h3 { color: white; }
+    
+    .add-btn {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 1rem 1.5rem; text-align: right; }
+    th {
+      background: rgba(0,0,0,0.3);
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+    td { color: rgba(255,255,255,0.85); border-bottom: 1px solid rgba(255,255,255,0.03); }
+    tr:hover td { background: rgba(255,107,53,0.05); }
+    
+    .action-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn-edit, .btn-delete {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .btn-edit { background: #2196F3; color: white; }
+    .btn-delete { background: #F44336; color: white; }
+    
+    .empty-state { text-align: center; padding: 3rem; color: rgba(255,255,255,0.5); }
+    
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.show { display: flex; }
+    
+    .modal-content {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 2rem;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .modal h2 { color: white; margin-bottom: 1.5rem; }
+    
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #FF6B35; }
+    
+    .modal-btns { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    .modal-btns button {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .btn-save { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+    .btn-cancel { background: rgba(255,255,255,0.1); color: white; }
+    
+    .success-message {
+      display: none;
+      background: linear-gradient(135deg, #4CAF50, #81C784);
+      color: white;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .success-message.show { display: block; }
+    
+    .view-site-btn {
+      background: linear-gradient(135deg, #00BCD4, #26C6DA);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .admin-container { flex-direction: column; }
+      .sidebar { width: 100%; padding: 1rem; }
+      .menu { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .menu a { padding: 0.5rem 1rem; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">💪 Al-Daoudi Club</div>
+      <ul class="menu">
+        <li><a href="admin.html">📊 لوحة التحكم</a></li>
+        <li><a href="admin-members.html">👥 الأعضاء</a></li>
+        <li><a href="admin-classes.html">🏋️ الحصص</a></li>
+        <li><a href="admin-memberships.html">💳 الاشتراكات</a></li>
+        <li><a href="website-settings.html">🌐 إعدادات الموقع</a></li>
+        <li><a href="admin-services.html">🛠️ الخدمات</a></li>
+        <li><a href="admin-schedule.html" class="active">📅 الجدول</a></li>
+        <li><a href="index.html">🏠 الموقع</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="header">
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <a href="admin.html" class="back-btn">← رجوع</a>
+          <h1>📅 إدارة الجدول</h1>
+        </div>
+        <button class="logout-btn" onclick="logout()">🚪 تسجيل خروج</button>
+      </div>
+
+      <div class="success-message" id="success-message">
+        ✅ تم حفظ التغييرات بنجاح!
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>📋 جدول الحصص الأسبوعي</h3>
+          <div style="display: flex; gap: 1rem;">
+            <a href="schedule.html" target="_blank" class="view-site-btn">👁️ عرض الجدول</a>
+            <button class="add-btn" onclick="openModal('add')">➕ إضافة حصة</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>اسم الحصة</th>
+              <th>المدرب</th>
+              <th>اليوم</th>
+              <th>الوقت</th>
+              <th>المدة</th>
+              <th>السعة</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-table">
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Class Modal -->
+  <div id="modal-class" class="modal">
+    <div class="modal-content">
+      <h2 id="modal-title">➕ إضافة حصة جديدة</h2>
+      <form id="form-class" onsubmit="saveClass(event)">
+        <input type="hidden" id="class-id">
+        <div class="form-group">
+          <label>اسم الحصة</label>
+          <input type="text" id="class-name" required placeholder="مثال: Yoga الصباح">
+        </div>
+        <div class="form-group">
+          <label>اسم المدرب</label>
+          <input type="text" id="class-instructor" required placeholder="مثال: سارة">
+        </div>
+        <div class="form-group">
+          <label>اليوم</label>
+          <select id="class-day" required>
+            <option value="Monday">الاثنين</option>
+            <option value="Tuesday">الثلاثاء</option>
+            <option value="Wednesday">الأربعاء</option>
+            <option value="Thursday">الخميس</option>
+            <option value="Friday">الجمعة</option>
+            <option value="Saturday">السبت</option>
+            <option value="Sunday">الأحد</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>الوقت</label>
+          <input type="time" id="class-time" required>
+        </div>
+        <div class="form-group">
+          <label>المدة (دقائق)</label>
+          <input type="number" id="class-duration" value="60" min="15" max="180">
+        </div>
+        <div class="form-group">
+          <label>السعة (عدد المشاركين)</label>
+          <input type="number" id="class-capacity" value="20" min="1" max="100">
+        </div>
+        <div class="form-group">
+          <label>الوصف (اختياري)</label>
+          <textarea id="class-description" placeholder="وصف الحصة..."></textarea>
+        </div>
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" onclick="closeModal()">إلغاء</button>
+          <button type="submit" class="btn-save">💾 حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Check if logged in
+    if (localStorage.getItem('gym_admin_logged') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    // Default schedule
+    let schedule = JSON.parse(localStorage.getItem('gym_schedule')) || [
+      { id: 1, name: 'Yoga الصباح', instructor: 'سارة', day: 'Monday', time: '06:00', duration: 60, capacity: 20, description: 'حصة يوغا صباحية للاسترخاء' },
+      { id: 2, name: 'HIIT', instructor: 'أحمد', day: 'Monday', time: '18:00', duration: 45, capacity: 15, description: 'تمارين عالية الشدة' },
+      { id: 3, name: 'تمارين قوى', instructor: 'خالد', day: 'Tuesday', time: '19:00', duration: 60, capacity: 10, description: 'تمارين بناء العضلات' },
+      { id: 4, name: 'كروسف', instructor: 'محمد', day: 'Wednesday', dayAr: 'الأربعاء', time: '07:00', duration: 60, capacity: 25, description: 'تمارين كروسفيت' },
+      { id: 5, name: 'زومبا', instructor: 'سارة', day: 'Thursday', time: '18:30', duration: 45, capacity: 30, description: 'تمارين رقص وإيروبيك' },
+      { id: 6, name: 'تمارين قوى', instructor: 'خالد', day: 'Friday', time: '17:00', duration: 60, capacity: 12, description: 'تمارين القوة' },
+      { id: 7, name: 'يوجا', instructor: 'نورة', day: 'Saturday', time: '09:00', duration: 60, capacity: 20, description: 'جلسة يوغا' },
+      { id: 8, name: 'إيروبيك', instructor: 'أحمد', day: 'Sunday', time: '10:00', duration: 45, capacity: 25, description: 'تمارين إيروبيك' }
+    ];
+
+    // Save schedule to localStorage
+    function saveSchedule() {
+      localStorage.setItem('gym_schedule', JSON.stringify(schedule));
+    }
+
+    // Day names mapping
+    const dayNames = {
+      'Monday': 'الاثنين',
+      'Tuesday': 'الثلاثاء',
+      'Wednesday': 'الأربعاء',
+      'Thursday': 'الخميس',
+      'Friday': 'الجمعة',
+      'Saturday': 'السبت',
+      'Sunday': 'الأحد'
+    };
+
+    // Load schedule table
+    function loadSchedule() {
+      const tbody = document.getElementById('schedule-table');
+      tbody.innerHTML = schedule.map((c, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${c.name}</td>
+          <td>${c.instructor}</td>
+          <td>${dayNames[c.day] || c.day}</td>
+          <td>${c.time}</td>
+          <td>${c.duration} دقيقة</td>
+          <td>${c.capacity}</td>
+          <td class="action-btns">
+            <button class="btn-edit" onclick="editClass(${c.id})">✏️ تعديل</button>
+            <button class="btn-delete" onclick="deleteClass(${c.id})">🗑️ حذف</button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="8" class="empty-state">لا توجد حصص في الجدول</td></tr>';
+    }
+
+    // Open modal
+    function openModal(mode, id = null) {
+      document.getElementById('modal-class').classList.add('show');
+      if (mode === 'edit' && id) {
+        const cls = schedule.find(c => c.id === id);
+        document.getElementById('modal-title').textContent = '✏️ تعديل الحصة';
+        document.getElementById('class-id').value = cls.id;
+        document.getElementById('class-name').value = cls.name;
+        document.getElementById('class-instructor').value = cls.instructor;
+        document.getElementById('class-day').value = cls.day;
+        document.getElementById('class-time').value = cls.time;
+        document.getElementById('class-duration').value = cls.duration;
+        document.getElementById('class-capacity').value = cls.capacity;
+        document.getElementById('class-description').value = cls.description || '';
+      } else {
+        document.getElementById('modal-title').textContent = '➕ إضافة حصة جديدة';
+        document.getElementById('class-id').value = '';
+        document.getElementById('form-class').reset();
+      }
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('modal-class').classList.remove('show');
+    }
+
+    // Edit class
+    function editClass(id) {
+      openModal('edit', id);
+    }
+
+    // Save class
+    function saveClass(e) {
+      e.preventDefault();
+      const id = document.getElementById('class-id').value;
+      const name = document.getElementById('class-name').value;
+      const instructor = document.getElementById('class-instructor').value;
+      const day = document.getElementById('class-day').value;
+      const time = document.getElementById('class-time').value;
+      const duration = document.getElementById('class-duration').value;
+      const capacity = document.getElementById('class-capacity').value;
+      const description = document.getElementById('class-description').value;
+      
+      if (id) {
+        // Update existing
+        const index = schedule.findIndex(c => c.id == id);
+        if (index !== -1) {
+          schedule[index] = { id: parseInt(id), name, instructor, day, time, duration, capacity, description };
+        }
+      } else {
+        // Add new
+        schedule.push({ id: Date.now(), name, instructor, day, time, duration, capacity, description });
+      }
+      
+      saveSchedule();
+      closeModal();
+      loadSchedule();
+      showSuccess();
+    }
+
+    // Delete class
+    function deleteClass(id) {
+      if (confirm('هل أنت متأكد من حذف هذه الحصة؟')) {
+        schedule = schedule.filter(c => c.id !== id);
+        saveSchedule();
+        loadSchedule();
+      }
+    }
+
+    // Show success message
+    function showSuccess() {
+      const msg = document.getElementById('success-message');
+      msg.classList.add('show');
+      setTimeout(() => {
+        msg.classList.remove('show');
+      }, 3000);
+    }
+
+    // Logout
+    function logout() {
+      fetch('/api/admin/logout', { method: 'POST' })
+        .then(() => {
+          localStorage.removeItem('gym_admin_logged');
+          localStorage.removeItem('gym_admin_user');
+          window.location.href = 'login.html';
+        })
+        .catch(() => {
+          localStorage.removeItem('gym_admin_logged');
+          localStorage.removeItem('gym_admin_user');
+          window.location.href = 'login.html';
+        });
+    }
+
+    // Initialize
+    loadSchedule();
+  </script>
+</body>
+</html>
+

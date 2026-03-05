@@ -1,0 +1,63 @@
+# TODO - Add Edit Website Button and Full Admin Control
+
+## Task: Add "Edit Website" button in admin panel and give admin full control over website
+
+### Steps Completed:
+
+- [x] 1. Add "Edit Website" button in admin sidebar (admin.html) - Added links to website-settings.html, admin-services.html, admin-schedule.html
+- [x] 2. Create website-settings.html page for editing general settings - Already exists
+- [x] 3. Create admin-services.html for services management - Already exists
+- [x] 4. Create admin-schedule.html for schedule management - Already exists
+- [x] 5. Remove schedule.html link from public site navigation (membership.html, services.html)
+- [x] 6. Update index.html to load dynamic data - Already has script for loading settings
+- [x] 7. Update services.html to load dynamic data - Already has script for loading services
+- [x] 8. Update membership.html to load dynamic data - Already has dynamic content
+
+### Summary of Changes Made:
+
+1. **Admin Panel (admin.html)** - Added new sidebar menu items:
+   - 🌐 إعدادات الموقع (website-settings.html)
+   - 🛠️ الخدمات (admin-services.html)
+   - 📅 الجدول (admin-schedule.html)
+
+2. **Removed Schedule link from public pages**:
+   - membership.html - removed schedule link
+   - services.html - removed schedule link
+
+3. **New Admin Pages Created**:
+   - website-settings.html - For editing site info, contact, hours, social media, hero content
+   - admin-services.html - For managing gym services
+   - admin-schedule.html - For managing class schedule
+
+4. **Public Pages Updated**:
+   - index.html - Has JavaScript to load dynamic site settings from localStorage
+   - services.html - Has JavaScript to load services from localStorage or API
+
+### Admin Control Features:
+
+The admin can now control:
+- ✅ Website name and logo
+- ✅ Contact information (phone, email, address)
+- ✅ Operating hours
+- ✅ Social media links
+- ✅ Hero section content
+- ✅ About section content
+- ✅ Footer content
+- ✅ Services (add, edit, delete)
+- ✅ Schedule/Classes (add, edit, delete)
+- ✅ Members management
+- ✅ Memberships management
+- ✅ Messages management
+- ✅ Assistants management
+- ✅ Bookings management
+
+### How to Use:
+
+1. Login to admin panel (admin.html)
+2. Use the sidebar to navigate:
+   - "🌐 إعدادات الموقع" - Edit website settings
+   - "🛠️ الخدمات" - Manage services
+   - "📅 الجدول" - Manage schedule
+3. Changes are saved to localStorage and applied to the public website automatically
+
+

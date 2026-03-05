@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة الخدمات - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin-styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); min-height: 100vh; }
+    
+    .admin-container { display: flex; min-height: 100vh; }
+    
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+      padding: 2rem 1rem;
+      color: white;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+    }
+    
+    .logo {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .menu { list-style: none; }
+    .menu li { margin-bottom: 0.5rem; }
+    .menu a {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      color: #aaa;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+    .menu a:hover, .menu a.active {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+    }
+    
+    .main {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .header h1 { color: white; font-size: 1.8rem; }
+    
+    .back-btn {
+      background: linear-gradient(135deg, #2196F3, #64B5F6);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .logout-btn {
+      background: linear-gradient(135deg, #F44336, #E57373);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-header h3 { color: white; }
+    
+    .add-btn {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 1rem 1.5rem; text-align: right; }
+    th {
+      background: rgba(0,0,0,0.3);
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+    td { color: rgba(255,255,255,0.85); border-bottom: 1px solid rgba(255,255,255,0.03); }
+    tr:hover td { background: rgba(255,107,53,0.05); }
+    
+    .action-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn-edit, .btn-delete {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .btn-edit { background: #2196F3; color: white; }
+    .btn-delete { background: #F44336; color: white; }
+    
+    .empty-state { text-align: center; padding: 3rem; color: rgba(255,255,255,0.5); }
+    
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.show { display: flex; }
+    
+    .modal-content {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 2rem;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .modal h2 { color: white; margin-bottom: 1.5rem; }
+    
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #FF6B35; }
+    
+    .modal-btns { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    .modal-btns button {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .btn-save { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+    .btn-cancel { background: rgba(255,255,255,0.1); color: white; }
+    
+    .success-message {
+      display: none;
+      background: linear-gradient(135deg, #4CAF50, #81C784);
+      color: white;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .success-message.show { display: block; }
+    
+    @media (max-width: 768px) {
+      .admin-container { flex-direction: column; }
+      .sidebar { width: 100%; padding: 1rem; }
+      .menu { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .menu a { padding: 0.5rem 1rem; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">💪 Al-Daoudi Club</div>
+      <ul class="menu">
+        <li><a href="admin.html">📊 لوحة التحكم</a></li>
+        <li><a href="admin-members.html">👥</li>
+         الأعضاء</a><li><a href="admin-classes.html">🏋️ الحصص</a></li>
+        <li><a href="admin-memberships.html">💳 الاشتراكات</a></li>
+        <li><a href="website-settings.html">🌐 إعدادات الموقع</a></li>
+        <li><a href="admin-services.html" class="active">🛠️ الخدمات</a></li>
+        <li><a href="admin-schedule.html">📅 الجدول</a></li>
+        <li><a href="index.html">🏠 الموقع</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="header">
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <a href="admin.html" class="back-btn">← رجوع</a>
+          <h1>🛠️ إدارة الخدمات</h1>
+        </div>
+        <button class="logout-btn" onclick="logout()">🚪 تسجيل خروج</button>
+      </div>
+
+      <div class="success-message" id="success-message">
+        ✅ تم حفظ التغييرات بنجاح!
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>📋 قائمة الخدمات</h3>
+          <button class="add-btn" onclick="openModal('add')">➕ إضافة خدمة</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>اسم الخدمة</th>
+              <th>الوصف</th>
+              <th>الأيقونة</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="services-table">
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Service Modal -->
+  <div id="modal-service" class="modal">
+    <div class="modal-content">
+      <h2 id="modal-title">➕ إضافة خدمة جديدة</h2>
+      <form id="form-service" onsubmit="saveService(event)">
+        <input type="hidden" id="service-id">
+        <div class="form-group">
+          <label>اسم الخدمة</label>
+          <input type="text" id="service-name" required placeholder="مثال: كمال الأجسام">
+        </div>
+        <div class="form-group">
+          <label>الوصف</label>
+          <textarea id="service-description" required placeholder="وصف الخدمة..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>الأيقونة (Material Icons)</label>
+          <select id="service-icon">
+            <option value="fitness_center">🏋️ fitness_center</option>
+            <option value="sports_gymnastics">🤸 sports_gymnastics</option>
+            <option value="sports_martial_arts">🥋 sports_martial_arts</option>
+            <option value="nutrition">🥗 nutrition</option>
+            <option value="directions_run">🏃 directions_run</option>
+            <option value="pool">🏊 pool</option>
+            <option value="self_improvement">🧘 self_improvement</option>
+            <option value="sports_handball">🥎 sports_handball</option>
+            <option value="fitness_center">💪 fitness_center</option>
+            <option value="personal_trainer">👨‍🏫 personal_trainer</option>
+          </select>
+        </div>
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" onclick="closeModal()">إلغاء</button>
+          <button type="submit" class="btn-save">💾 حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Check if logged in
+    if (localStorage.getItem('gym_admin_logged') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    // Default services
+    let services = JSON.parse(localStorage.getItem('gym_services')) || [
+      { id: 1, name: 'كمال الأجسام', description: 'تدرب على أحدث المعدات مع إرشاد مدربين محترفين متخصصين في كمال الأجسام.', icon: 'fitness_center' },
+      { id: 2, name: 'تمارين لياقة', description: 'برامج تمارين مخصصة لتناسب مستوى خبرتك وأهدافك الشخصية.', icon: 'sports_gymnastics' },
+      { id: 3, name: 'الكيك بوكسينغ', description: 'تعلم فنون القتال مع مدربين محترفين. قاعة مجهزة بأحدث المعدات.', icon: 'sports_martial_arts' },
+      { id: 4, name: 'استشارات تغذية', description: 'احصل على خطة تغذية متخصصة من خبراء التغذية الرياضية.', icon: 'nutrition' },
+      { id: 5, name: 'إيروبيك', description: 'تمارين إيروبيك عالية الطاقة لحرق السعرات وتحسين اللياقة القلبية.', icon: 'directions_run' }
+    ];
+
+    // Save services to localStorage
+    function saveServices() {
+      localStorage.setItem('gym_services', JSON.stringify(services));
+    }
+
+    // Load services table
+    function loadServices() {
+      const tbody = document.getElementById('services-table');
+      tbody.innerHTML = services.map((s, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${s.name}</td>
+          <td>${s.description.substring(0, 50)}${s.description.length > 50 ? '...' : ''}</td>
+          <td><span class="material-icons">${s.icon}</span></td>
+          <td class="action-btns">
+            <button class="btn-edit" onclick="editService(${s.id})">✏️ تعديل</button>
+            <button class="btn-delete" onclick="deleteService(${s.id})">🗑️ حذف</button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="5" class="empty-state">لا توجد خدمات</td></tr>';
+    }
+
+    // Open modal
+    function openModal(mode, id = null) {
+      document.getElementById('modal-service').classList.add('show');
+      if (mode === 'edit' && id) {
+        const service = services.find(s => s.id === id);
+        document.getElementById('modal-title').textContent = '✏️ تعديل الخدمة';
+        document.getElementById('service-id').value = service.id;
+        document.getElementById('service-name').value = service.name;
+        document.getElementById('service-description').value = service.description;
+        document.getElementById('service-icon').value = service.icon;
+      } else {
+        document.getElementById('modal-title').textContent = '➕ إضافة خدمة جديدة';
+        document.getElementById('service-id').value = '';
+        document.getElementById('form-service').reset();
+      }
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('modal-service').classList.remove('show');
+    }
+
+    // Edit service
+    function editService(id) {
+      openModal('edit', id);
+    }
+
+    // Save service
+    function saveService(e) {
+      e.preventDefault();
+      const id = document.getElementById('service-id').value;
+      const name = document.getElementById('service-name').value;
+      const description = document.getElementById('service-description').value;
+      const icon = document.getElementById('service-icon').value;
+      
+      if (id) {
+        // Update existing
+        const index = services.findIndex(s => s.id == id);
+        if (index !== -1) {
+          services[index] = { id: parseInt(id), name, description, icon };
+        }
+      } else {
+        // Add new
+        services.push({ id: Date.now(), name, description, icon });
+      }
+      
+      saveServices();
+      closeModal();
+      loadServices();
+      showSuccess();
+    }
+
+    // Delete service
+    function deleteService(id) {
+      if (confirm('هل أنت متأكد من حذف هذه الخدمة؟')) {
+        services = services.filter(s => s.id !== id);
+        saveServices();
+        loadServices();
+      }
+    }
+
+    // Show success message
+    function showSuccess() {
+      const msg = document.getElementById('success-message');
+      msg.classList.add('show');
+      setTimeout(() => {
+        msg.classList.remove('show');
+      }, 3000);
+    }
+
+    // Logout
+    function logout() {
+      fetch('/api/admin/logout', { method: 'POST' })
+        .then(() => {
+          localStorage.removeItem('gym_admin_logged');
+          localStorage.removeItem('gym_admin_user');
+          window.location.href = 'login.html';
+        })
+        .catch(() => {
+          localStorage.removeItem('gym_admin_logged');
+          localStorage.removeItem('gym_admin_user');
+          window.location.href = 'login.html';
+        });
+    }
+
+    // Initialize
+    loadServices();
+  </script>
+</body>
+</html>
+

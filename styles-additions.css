@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إعدادات الموقع - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin-styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); min-height: 100vh; }
+    
+    .admin-container { display: flex; min-height: 100vh; }
+    
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+      padding: 2rem 1rem;
+      color: white;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+    }
+    
+    .logo {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .menu { list-style: none; }
+    .menu li { margin-bottom: 0.5rem; }
+    .menu a {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      color: #aaa;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+    .menu a:hover, .menu a.active {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+    }
+    
+    .main {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .header h1 { color: white; font-size: 1.8rem; }
+    
+    .back-btn {
+      background: linear-gradient(135deg, #2196F3, #64B5F6);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .logout-btn {
+      background: linear-gradient(135deg, #F44336, #E57373);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-header h3 { color: white; }
+    
+    .card-body {
+      padding: 2rem;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; color: rgba(255,255,255,0.9); margin-bottom: 0.5rem; font-weight: 500; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { 
+      outline: none; 
+      border-color: #FF6B35; 
+    }
+    
+    .save-btn {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-top: 1rem;
+      transition: all 0.3s;
+    }
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255,107,53,0.3);
+    }
+    
+    .success-message {
+      display: none;
+      background: linear-gradient(135deg, #4CAF50, #81C784);
+      color: white;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .success-message.show { display: block; }
+    
+    .preview-section {
+      background: rgba(0,0,0,0.2);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-top: 2rem;
+    }
+    .preview-section h4 {
+      color: #FF6B35;
+      margin-bottom: 1rem;
+    }
+    .preview-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      color: rgba(255,255,255,0.8);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .preview-item:last-child { border-bottom: none; }
+    .preview-label { 
+      min-width: 120px; 
+      color: rgba(255,255,255,0.5); 
+    }
+    
+    @media (max-width: 768px) {
+      .admin-container { flex-direction: column; }
+      .sidebar { width: 100%; padding: 1rem; }
+      .menu { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .menu a { padding: 0.5rem 1rem; font-size: 0.9rem; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">💪 Al-Daoudi Club</div>
+      <ul class="menu">
+        <li><a href="admin.html">📊 لوحة التحكم</a></li>
+        <li><a href="admin-members.html">👥 الأعضاء</a></li>
+        <li><a href="admin-classes.html">🏋️ الحصص</a></li>
+        <li><a href="admin-memberships.html">💳 الاشتراكات</a></li>
+        <li><a href="website-settings.html" class="active">🌐 إعدادات الموقع</a></li>
+        <li><a href="admin-services.html">🛠️ الخدمات</a></li>
+        <li><a href="admin-schedule.html">📅 الجدول</a></li>
+        <li><a href="index.html">🏠 الموقع</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="header">
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <a href="admin.html" class="back-btn">← رجوع</a>
+          <h1>🌐 إعدادات الموقع</h1>
+        </div>
+        <button class="logout-btn" onclick="logout()">🚪 تسجيل خروج</button>
+      </div>
+
+      <div class="success-message" id="success-message">
+        ✅ تم حفظ الإعدادات بنجاح!
+      </div>
+
+      <!-- Website Info Settings -->
+      <div class="card">
+        <div class="card-header">
+          <h3>ℹ️ معلومات الموقع</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>اسم النادي</label>
+              <input type="text" id="site-name" value="Al-Daoudi Bodybuilding Club">
+            </div>
+            <div class="form-group">
+              <label>العنوان</label>
+              <input type="text" id="site-address" value="المغرب، الدار البيضاء">
+            </div>
+            <div class="form-group">
+              <label>رقم الهاتف</label>
+              <input type="tel" id="site-phone" value="06 33 37 77 22">
+            </div>
+            <div class="form-group">
+              <label>البريد الإلكتروني</label>
+              <input type="email" id="site-email" value="Clubsportdaoudi2000@gmail.com">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Operating Hours -->
+      <div class="card">
+        <div class="card-header">
+          <h3>🕐 ساعات العمل</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>الاثنين (الرجال)</label>
+              <input type="text" id="hours-monday-men" value="6صباحاً - 12 ظهراً">
+            </div>
+            <div class="form-group">
+              <label>الاثنين (النساء)</label>
+              <input type="text" id="hours-monday-women" value="12 ظهراً - 4 عصراً">
+            </div>
+            <div class="form-group">
+              <label>الثلاثاء - الجمعة</label>
+              <input type="text" id="hours-weekdays" value="6 صباحاً - 11 مساءً">
+            </div>
+            <div class="form-group">
+              <label>السبت - الأحد</label>
+              <input type="text" id="hours-weekend" value="8 صباحاً - 8 مساءً">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social Media -->
+      <div class="card">
+        <div class="card-header">
+          <h3>📱 وسائل التواصل الاجتماعي</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>فيسبوك</label>
+              <input type="text" id="social-facebook" placeholder="رابط فيسبوك">
+            </div>
+            <div class="form-group">
+              <label>إنستغرام</label>
+              <input type="text" id="social-instagram" placeholder="رابط إنستغرام">
+            </div>
+            <div class="form-group">
+              <label>يوتيوب</label>
+              <input type="text" id="social-youtube" placeholder="رابط يوتيوب">
+            </div>
+            <div class="form-group">
+              <label>تويتر</label>
+              <input type="text" id="social-twitter" placeholder="رابط تويتر">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Homepage Content -->
+      <div class="card">
+        <div class="card-header">
+          <h3>🏠 محتوى الصفحة الرئيسية</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>عنوان الصفحة الرئيسية</label>
+            <input type="text" id="hero-title" value="غير حياتك - غير مستقبلك">
+          </div>
+          <div class="form-group">
+            <label>وصف الصفحة الرئيسية</label>
+            <textarea id="hero-description">انضم إلى عائلة الداودي واستمتع بأفضل المعدات والمدربين المحترفين</textarea>
+          </div>
+          <div class="form-group">
+            <label>نص الدعوة (CTA)</label>
+            <input type="text" id="cta-text" value="اشترك الآن">
+          </div>
+          <div class="form-group">
+            <label>عن القسم الرئيسي</label>
+            <input type="text" id="about-title" value="عن النادي">
+          </div>
+          <div class="form-group">
+            <label>نص القسم الرئيسي</label>
+            <textarea id="about-text">في نادى الداودي، نؤمن بأن الجميع يستحق الفرصة للعيش بأسلوب حياة صحي ونشط. مرفقنا الحديث يوفر كل ما تحتاجه لتحقيق أهدافك في اللياقة.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Settings -->
+      <div class="card">
+        <div class="card-header">
+          <h3>📋 إعدادات الفوتر</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>نص الفوتر</label>
+            <input type="text" id="footer-text" value="غير حياتك، غير مستقبلك">
+          </div>
+          <div class="form-group">
+            <label>نص حقوق النشر</label>
+            <input type="text" id="copyright" value="جميع الحقوق محفوظة">
+          </div>
+        </div>
+      </div>
+
+      <button class="save-btn" onclick="saveSettings()">💾 حفظ جميع الإعدادات</button>
+
+      <!-- Preview -->
+      <div class="preview-section">
+        <h4>👁️ معاينة سريعة</h4>
+        <div class="preview-item">
+          <span class="preview-label">اسم النادي:</span>
+          <span id="preview-name">Al-Daoudi Bodybuilding Club</span>
+        </div>
+        <div class="preview-item">
+          <span class="preview-label">الهاتف:</span>
+          <span id="preview-phone">06 33 37 77 22</span>
+        </div>
+        <div class="preview-item">
+          <span class="preview-label">البريد:</span>
+          <span id="preview-email">Clubsportdaoudi2000@gmail.com</span>
+        </div>
+        <div class="preview-item">
+          <span class="preview-label">العنوان:</span>
+          <span id="preview-address">المغرب، الدار البيضاء</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Check if logged in
+    if (localStorage.getItem('gym_admin_logged') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    // Load saved settings
+    function loadSettings() {
+      const settings = JSON.parse(localStorage.getItem('gym_site_settings')) || {};
+      
+      if (settings.siteName) document.getElementById('site-name').value = settings.siteName;
+      if (settings.siteAddress) document.getElementById('site-address').value = settings.siteAddress;
+      if (settings.sitePhone) document.getElementById('site-phone').value = settings.sitePhone;
+      if (settings.siteEmail) document.getElementById('site-email').value = settings.siteEmail;
+      
+      if (settings.hoursMondayMen) document.getElementById('hours-monday-men').value = settings.hoursMondayMen;
+      if (settings.hoursMondayWomen) document.getElementById('hours-monday-women').value = settings.hoursMondayWomen;
+      if (settings.hoursWeekdays) document.getElementById('hours-weekdays').value = settings.hoursWeekdays;
+      if (settings.hoursWeekend) document.getElementById('hours-weekend').value = settings.hoursWeekend;
+      
+      if (settings.socialFacebook) document.getElementById('social-facebook').value = settings.socialFacebook;
+      if (settings.socialInstagram) document.getElementById('social-instagram').value = settings.socialInstagram;
+      if (settings.socialYoutube) document.getElementById('social-youtube').value = settings.socialYoutube;
+      if (settings.socialTwitter) document.getElementById('social-twitter').value = settings.socialTwitter;
+      
+      if (settings.heroTitle) document.getElementById('hero-title').value = settings.heroTitle;
+      if (settings.heroDescription) document.getElementById('hero-description').value = settings.heroDescription;
+      if (settings.ctaText) document.getElementById('cta-text').value = settings.ctaText;
+      if (settings.aboutTitle) document.getElementById('about-title').value = settings.aboutTitle;
+      if (settings.aboutText) document.getElementById('about-text').value = settings.aboutText;
+      
+      if (settings.footerText) document.getElementById('footer-text').value = settings.footerText;
+      if (settings.copyright) document.getElementById('copyright').value = settings.copyright;
+      
+      updatePreview();
+    }
+
+    // Update preview
+    function updatePreview() {
+      document.getElementById('preview-name').textContent = document.getElementById('site-name').value;
+      document.getElementById('preview-phone').textContent = document.getElementById('site-phone').value;
+      document.getElementById('preview-email').textContent = document.getElementById('site-email').value;
+      document.getElementById('preview-address').textContent = document.getElementById('site-address').value;
+    }
+
+    // Add event listeners for live preview
+    document.querySelectorAll('input, textarea').forEach(el => {
+      el.addEventListener('input', updatePreview);
+    });
+
+    // Save settings
+    function saveSettings() {
+      const settings = {
+        siteName: document.getElementById('site-name').value,
+        siteAddress: document.getElementById('site-address').value,
+        sitePhone: document.getElementById('site-phone').value,
+        siteEmail: document.getElementById('site-email').value,
+        
+        hoursMondayMen: document.getElementById('hours-monday-men').value,
+        hoursMondayWomen: document.getElementById('hours-monday-women').value,
+        hoursWeekdays: document.getElementById('hours-weekdays').value,
+        hoursWeekend: document.getElementById('hours-weekend').value,
+        
+        socialFacebook: document.getElementById('social-facebook').value,
+        socialInstagram: document.getElementById('social-instagram').value,
+        socialYoutube: document.getElementById('social-youtube').value,
+        socialTwitter: document.getElementById('social-twitter').value,
+        
+        heroTitle: document.getElementById('hero-title').value,
+        heroDescription: document.getElementById('hero-description').value,
+        ctaText: document.getElementById('cta-text').value,
+        aboutTitle: document.getElementById('about-title').value,
+        aboutText: document.getElementById('about-text').value,
+        
+        footerText: document.getElementById('footer-text').value,
+        copyright: document.getElementById('copyright').value
+      };
+      
+      localStorage.setItem('gym_site_settings', JSON.stringify(settings));
+      
+      // Show success message
+      const successMsg = document.getElementById('success-message');
+      successMsg.classList.add('show');
+      setTimeout(() => {
+        successMsg.classList.remove('show');
+      }, 3000);
+    }
+
+    // Logout
+    function logout() {
+      fetch('/api/admin/logout', { method: 'POST' })
+        .then(() => {
+          localStorage.removeItem('gym_admin_logged');
+          localStorage.removeItem('gym_admin_user');
+          window.location.href = 'login.html';
+        })
+        .catch(() => {
+          localStorage.removeItem('gym_admin_logged');
+          localStorage.removeItem('gym_admin_user');
+          window.location.href = 'login.html';
+        });
+    }
+
+    // Initialize
+    loadSettings();
+  </script>
+</body>
+</html>
+

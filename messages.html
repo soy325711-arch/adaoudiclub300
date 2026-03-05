@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 1rem;
+    }
+    
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(33, 150, 243, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 107, 53, 0.05) 0%, transparent 40%);
+      animation: bgPulse 15s ease-in-out infinite;
+    }
+    
+    @keyframes bgPulse {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.1) rotate(5deg); }
+    }
+    
+    .floating-shapes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+    
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.08;
+    }
+    
+    .shape-1 {
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      top: -150px;
+      left: -150px;
+      animation: float1 20s ease-in-out infinite;
+    }
+    
+    .shape-2 {
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(135deg, #2196F3, #64B5F6);
+      bottom: -100px;
+      right: -100px;
+      animation: float2 25s ease-in-out infinite;
+    }
+    
+    .shape-3 {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      top: 60%;
+      left: 10%;
+      animation: float3 18s ease-in-out infinite;
+    }
+    
+    .shape-4 {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(135deg, #2196F3, #1976D2);
+      top: 20%;
+      right: 15%;
+      animation: float4 22s ease-in-out infinite;
+    }
+    
+    @keyframes float1 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(50px, 50px) rotate(10deg); }
+    }
+    
+    @keyframes float2 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-40px, -40px) rotate(-10deg); }
+    }
+    
+    @keyframes float3 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, -30px); }
+    }
+    
+    @keyframes float4 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-20px, 20px); }
+    }
+    
+    .login-container {
+      background: linear-gradient(145deg, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.95));
+      padding: 3rem;
+      border-radius: 28px;
+      box-shadow: 
+        0 25px 80px rgba(0, 0, 0, 0.5),
+        0 0 1px rgba(255, 107, 53, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(255, 107, 53, 0.15);
+      backdrop-filter: blur(20px);
+      animation: fadeInUp 0.8s ease;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #FF6B35, #ff8f5a, #FF6B35, transparent);
+      border-radius: 0 0 10px 10px;
+    }
+    
+    .login-logo { text-align: center; margin-bottom: 1rem; }
+    .login-logo-icon { 
+      font-size: 4rem; 
+      margin-bottom: 0.5rem; 
+      display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    .login-logo h2 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .login-subtitle {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    
+    .login-type-selector {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .login-type-btn {
+      flex: 1;
+      padding: 1.5rem 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .login-type-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .login-type-btn:hover {
+      border-color: rgba(255, 107, 53, 0.4);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(255, 107, 53, 0.15);
+    }
+    
+    .login-type-btn:hover::before {
+      opacity: 1;
+    }
+    
+    .login-type-btn.active {
+      border-color: #FF6B35;
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(255, 107, 53, 0.05));
+      box-shadow: 
+        0 0 30px rgba(255, 107, 53, 0.2),
+        inset 0 0 20px rgba(255, 107, 53, 0.05);
+    }
+    
+    .login-type-btn .icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.8rem;
+      display: block;
+      filter: grayscale(0);
+      transition: all 0.3s;
+    }
+    
+    .login-type-btn.active .icon {
+      transform: scale(1.2);
+    }
+    
+    .login-type-btn .title {
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    
+    .login-type-btn .desc {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+      display: block;
+    }
+    
+    .form-group { margin-bottom: 1.5rem; position: relative; }
+    .form-group label { 
+      display: block; 
+      margin-bottom: 0.8rem; 
+      font-weight: 600; 
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.95rem;
+    }
+    
+    .input-wrapper {
+      position: relative;
+    }
+    
+    .toggle-password {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 1.2rem;
+      opacity: 0.6;
+      transition: 0.2s;
+      background: none;
+      border: none;
+      color: white;
+    }
+    
+    .toggle-password:hover {
+      opacity: 1;
+    }
+    
+    .password-input {
+      padding-left: 3rem !important;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: rgba(0, 0, 0, 0.3);
+      color: white;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #FF6B35;
+      box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.15), 0 10px 30px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    .form-group input::placeholder { color: rgba(255, 255, 255, 0.3); }
+    
+    .input-icon {
+      position: absolute;
+      left: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.3rem;
+      opacity: 0.5;
+      transition: all 0.3s;
+    }
+    
+    .form-group input:focus + .input-icon,
+    .form-group input:focus ~ .input-icon {
+      opacity: 1;
+      color: #FF6B35;
+    }
+    
+    .btn-login {
+      width: 100%;
+      padding: 1.3rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      color: white;
+      margin-top: 1rem;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 1px;
+    }
+    
+    .btn-login::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-login:hover::before {
+      left: 100%;
+    }
+    
+    .btn-login:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(255, 107, 53, 0.4);
+    }
+    
+    .btn-login:active {
+      transform: translateY(0);
+    }
+    
+    .btn-login:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .login-error {
+      background: linear-gradient(135deg, rgba(244, 67, 54, 0.15), rgba(244, 67, 54, 0.05));
+      color: #F44336;
+      padding: 1rem;
+      border-radius: 14px;
+      margin-bottom: 1.5rem;
+      display: none;
+      border: 1px solid rgba(244, 67, 54, 0.3);
+      text-align: center;
+      font-weight: 600;
+      animation: shake 0.5s;
+    }
+    
+    .login-error.show { display: block; }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+    }
+    
+    .helper-welcome, .admin-welcome {
+      padding: 1.3rem;
+      border-radius: 16px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .admin-welcome {
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(255, 107, 53, 0.05));
+      border: 1px solid rgba(255, 107, 53, 0.3);
+    }
+    
+    .admin-welcome::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #FF6B35, #ff8f5a);
+    }
+    
+    .helper-welcome {
+      background: linear-gradient(135deg, rgba(33, 150, 243, 0.15), rgba(33, 150, 243, 0.05));
+      border: 1px solid rgba(33, 150, 243, 0.3);
+    }
+    
+    .helper-welcome::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #2196F3, #64B5F6);
+    }
+    
+    .helper-welcome .icon, .admin-welcome .icon { 
+      font-size: 2.5rem; 
+      display: block; 
+      margin-bottom: 0.8rem; 
+    }
+    
+    .admin-welcome .text { color: #FF6B35; font-weight: 700; }
+    .helper-welcome .text { color: #2196F3; font-weight: 700; }
+    
+    .login-footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .login-footer a {
+      color: rgba(255, 255, 255, 0.5);
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .login-footer a:hover { 
+      color: #FF6B35;
+      transform: translateX(-5px);
+    }
+    
+.login-type-form { 
+      display: none; 
+      animation: fadeIn 0.4s ease;
+    }
+    
+    .login-type-form.active { 
+      display: block;
+    }
+    
+    .login-type-form.active {
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-10px); }
+    }
+    
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      margin-top: 1.5rem;
+      transition: all 0.3s;
+    }
+    
+    .back-link:hover {
+      color: #FF6B35;
+      transform: translateX(-5px);
+    }
+    
+    @media (max-width: 520px) {
+      .login-type-selector { flex-direction: column; }
+      .login-container { padding: 2rem 1.5rem; }
+      .login-logo h2 { font-size: 1.6rem; }
+    }
+    
+    /* Navigation Buttons */
+    .nav-buttons {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 100;
+    }
+    .nav-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .nav-btn:hover { transform: scale(1.1); }
+    .nav-btn.up { background: linear-gradient(135deg, #2196F3, #1976D2); color: white; }
+    .nav-btn.down { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+  </style>
+</head>
+<body>
+  <!-- Navigation Buttons -->
+  <div class="nav-buttons">
+    <button class="nav-btn up" onclick="scrollUp()" title="صعود للأعلى">▲</button>
+    <button class="nav-btn down" onclick="scrollDown()" title="هبوط للأسفل">▼</button>
+  </div>
+  
+  <div class="floating-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+  </div>
+  
+  <div class="login-container">
+    <div class="login-logo">
+      <div class="login-logo-icon">💪</div>
+      <h2>Al-Daoudi Club</h2>
+    </div>
+    <p class="login-subtitle">نظام إدارة نادى الداودي</p>
+    
+    <div class="login-type-selector">
+      <button type="button" class="login-type-btn active" onclick="selectLoginType('admin')">
+        <span class="icon">👨‍💼</span>
+        <span class="title">مدير</span>
+        <span class="desc">لوحة تحكم كاملة</span>
+      </button>
+      <button type="button" class="login-type-btn" onclick="selectLoginType('assistant')">
+        <span class="icon">🏋️</span>
+        <span class="title">مساعد/مدرب</span>
+        <span class="desc">عرض وإدارة محدودة</span>
+      </button>
+    </div>
+    
+    <div id="login-error" class="login-error">❌ اسم المستخدم أو كلمة المرور غير صحيحة</div>
+    
+    <!-- Admin Login Form -->
+    <form id="admin-login-form" class="login-type-form active">
+      <div class="admin-welcome">
+        <span class="icon">🔐</span>
+        <span class="text">تسجيل دخول كمدير</span>
+      </div>
+      <div class="form-group">
+        <label for="admin-username">اسم المستخدم</label>
+        <div class="input-wrapper">
+          <input type="text" id="admin-username" placeholder="أدخل اسم المستخدم" required>
+          <span class="input-icon">👤</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="admin-password">كلمة المرور</label>
+        <div class="input-wrapper">
+          <input type="password" id="admin-password" class="password-input" placeholder="أدخل كلمة المرور" required>
+          <span class="input-icon">🔒</span>
+          <button type="button" class="toggle-password" onclick="togglePassword('admin-password', this)">👁️</button>
+        </div>
+      </div>
+      <button type="submit" class="btn-login">🔑 تسجيل الدخول</button>
+    </form>
+    
+    <!-- Assistant Login Form -->
+    <form id="assistant-login-form" class="login-type-form">
+      <div class="helper-welcome">
+        <span class="icon">🏋️</span>
+        <span class="text">تسجيل دخول كمساعد/مدرب</span>
+      </div>
+      <div class="form-group">
+        <label for="assistant-username">اسمك</label>
+        <div class="input-wrapper">
+          <input type="text" id="assistant-username" placeholder="أدخل اسمك" required>
+          <span class="input-icon">👤</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="assistant-password">كلمة المرور</label>
+        <div class="input-wrapper">
+          <input type="password" id="assistant-password" class="password-input" placeholder="أدخل كلمة المرور" required>
+          <span class="input-icon">🔒</span>
+          <button type="button" class="toggle-password" onclick="togglePassword('assistant-password', this)">👁️</button>
+        </div>
+      </div>
+      <button type="submit" class="btn-login" style="background: linear-gradient(135deg, #2196F3, #64B5F6);">🏋️ تسجيل الدخول</button>
+    </form>
+    
+    <div class="login-footer">
+      <a href="index.html">← العودة للرئيسية</a>
+    </div>
+  </div>
+
+  <script>
+    // Login configuration
+    const ADMIN_USERNAME = 'adaoudi';
+    const ADMIN_PASSWORD = 'fitness2026@';
+    const ASSISTANT_PASSWORD = 'clubfitness2026@';
+    
+    let currentLoginType = 'admin';
+
+    // Check if already logged in
+    if (localStorage.getItem('gym_admin_logged') === 'true' || localStorage.getItem('gym_assistant_logged') === 'true') {
+      if (localStorage.getItem('gym_admin_logged') === 'true') {
+        window.location.href = 'admin.html';
+      } else {
+        window.location.href = 'assistant-dashboard.html';
+      }
+    }
+
+    // Switch between admin and assistant login
+    function selectLoginType(type) {
+      currentLoginType = type;
+      
+      document.querySelectorAll('.login-type-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      
+      if (type === 'admin') {
+        document.getElementById('admin-login-form').classList.add('active');
+        document.getElementById('assistant-login-form').classList.remove('active');
+      } else {
+        document.getElementById('admin-login-form').classList.remove('active');
+        document.getElementById('assistant-login-form').classList.add('active');
+      }
+      
+      document.getElementById('login-error').classList.remove('show');
+    }
+
+    // Admin login handler
+    document.getElementById('admin-login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('admin-username').value;
+      const password = document.getElementById('admin-password').value;
+      const errorDiv = document.getElementById('login-error');
+      const btn = document.querySelector('#admin-login-form .btn-login');
+      
+      btn.innerHTML = '⏳ جاري التحقق...';
+      btn.disabled = true;
+      
+      // Simulate API call delay
+      setTimeout(() => {
+        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+          localStorage.setItem('gym_admin_logged', 'true');
+          localStorage.setItem('gym_admin_user', username);
+          localStorage.setItem('gym_user_type', 'admin');
+          btn.innerHTML = '✓ تم تسجيل الدخول!';
+          btn.style.background = 'linear-gradient(135deg, #4CAF50, #81C784)';
+          setTimeout(() => { 
+            window.location.href = 'admin.html'; 
+          }, 600);
+        } else {
+          errorDiv.textContent = '❌ اسم المستخدم أو كلمة المرور غير صحيحة';
+          errorDiv.classList.add('show');
+          btn.innerHTML = '🔑 تسجيل الدخول';
+          btn.disabled = false;
+        }
+      }, 800);
+    });
+
+    // Assistant login handler
+    document.getElementById('assistant-login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('assistant-username').value;
+      const password = document.getElementById('assistant-password').value;
+      const errorDiv = document.getElementById('login-error');
+      const btn = document.querySelector('#assistant-login-form .btn-login');
+      
+      btn.innerHTML = '⏳ جاري التحقق...';
+      btn.disabled = true;
+      
+      // Simulate API call delay
+      setTimeout(() => {
+        if (password === ASSISTANT_PASSWORD) {
+          // Save assistant to list automatically if not exists
+          let assistants = JSON.parse(localStorage.getItem('gym_assists')) || [];
+          const existingIndex = assistants.findIndex(a => a.name.toLowerCase() === username.toLowerCase());
+          
+          if (existingIndex === -1) {
+            // Add new assistant
+            assistants.push({
+              id: Date.now(),
+              name: username,
+              role: 'مساعد/مدرب',
+              phone: '',
+              email: '',
+              experience: 0,
+              specialty: '',
+              status: 'active',
+              workdays: '',
+              startTime: '',
+              endTime: '',
+              notes: 'تم إضافته تلقائياً عند تسجيل الدخول',
+              loginCount: 1,
+              lastLogin: new Date().toISOString()
+            });
+          } else {
+            // Update existing
+            assistants[existingIndex].loginCount = (assistants[existingIndex].loginCount || 0) + 1;
+            assistants[existingIndex].lastLogin = new Date().toISOString();
+            assistants[existingIndex].status = 'active';
+          }
+          localStorage.setItem('gym_assistants', JSON.stringify(assistants));
+          
+          localStorage.setItem('gym_assistant_logged', 'true');
+          localStorage.setItem('gym_assistant_name', username);
+          localStorage.setItem('gym_user_type', 'assistant');
+          btn.innerHTML = '✓ تم تسجيل الدخول!';
+          btn.style.background = 'linear-gradient(135deg, #4CAF50, #81C784)';
+          setTimeout(() => { 
+            window.location.href = 'assistant-dashboard.html'; 
+          }, 600);
+        } else {
+          errorDiv.textContent = '❌ كلمة المرور غير صحيحة';
+          errorDiv.classList.add('show');
+          btn.innerHTML = '🏋️ تسجيل الدخول';
+          btn.disabled = false;
+        }
+      }, 800);
+    });
+
+    // Navigation functions - Fast scroll
+    function scrollUp() {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+    
+    function scrollDown() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'auto' });
+    }
+    
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🔒';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+  </script>
+</body>
+</html>
+

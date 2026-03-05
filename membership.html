@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول - Al-Daoudi Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Cairo', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .login-box {
+      background: linear-gradient(145deg, #1a1a2e, #16213e);
+      padding: 2.5rem;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,107,53,0.2);
+    }
+    .login-logo { text-align: center; margin-bottom: 1.5rem; }
+    .login-logo .icon { font-size: 3.5rem; display: block; margin-bottom: 0.5rem; }
+    .login-logo h1 {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    .login-logo p { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-top: 0.5rem; }
+    
+    .role-selector { display: flex; gap: 0.8rem; margin-bottom: 1.5rem; }
+    .role-btn {
+      flex: 1;
+      padding: 1rem;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      background: rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      color: rgba(255,255,255,0.7);
+    }
+    .role-btn:hover { border-color: rgba(255,107,53,0.4); transform: translateY(-2px); }
+    .role-btn.active { border-color: #FF6B35; background: rgba(255,107,53,0.1); color: white; }
+    .role-btn .icon { font-size: 1.8rem; display: block; margin-bottom: 0.3rem; }
+    .role-btn span { font-size: 0.85rem; font-weight: 600; }
+    
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-weight: 500; }
+    .form-group input {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    .form-group input:focus { outline: none; border-color: #FF6B35; box-shadow: 0 0 0 4px rgba(255,107,53,0.1); }
+    .form-group input::placeholder { color: rgba(255,255,255,0.3); }
+    
+    .btn-submit {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 0.5rem;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,107,53,0.3); }
+    .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+    
+    .error-msg {
+      background: rgba(244,67,54,0.15);
+      color: #F44336;
+      padding: 0.8rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      text-align: center;
+      display: none;
+      font-weight: 500;
+    }
+    .error-msg.show { display: block; animation: shake 0.4s; }
+    
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)}
+    }
+    
+    .login-form { display: none; animation: fadeIn 0.3s ease; }
+    .login-form.active { display: block; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    
+    .back-link { display: block; text-align: center; margin-top: 1.5rem; color: rgba(255,255,255,0.5); text-decoration: none; }
+    .back-link:hover { color: #FF6B35; }
+    
+    /* Navigation Buttons */
+    .nav-buttons {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 100;
+    }
+    .nav-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .nav-btn:hover { transform: scale(1.1); }
+    .nav-btn.up { background: linear-gradient(135deg, #2196F3, #1976D2); color: white; }
+    .nav-btn.down { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+    .nav-btn.home { background: linear-gradient(135deg, #4CAF50, #81C784); color: white; }
+    
+    @media (max-width: 480px) { 
+      .role-selector { flex-direction: column; } 
+      .login-box { padding: 1.5rem; }
+      .nav-buttons { bottom: 10px; left: 10px; }
+      .nav-btn { width: 40px; height: 40px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Buttons -->
+  <div class="nav-buttons">
+    <button class="nav-btn up" onclick="scrollUp()" title="صعود للأعلى">▲</button>
+    <button class="nav-btn down" onclick="scrollDown()" title="هبوط للأسفل">▼</button>
+    <button class="nav-btn home" onclick="goHome()" title="الرئيسية">🏠</button>
+  </div>
+  
+  <div class="login-box">
+    <div class="login-logo">
+      <span class="icon">💪</span>
+      <h1>Al-Daoudi Club</h1>
+      <p>نظام إدارة النادي</p>
+    </div>
+    
+    <div class="role-selector">
+      <button class="role-btn active" onclick="selectRole('admin')" id="btn-admin">
+        <span class="icon">👨‍💼</span>
+        <span>مدير</span>
+      </button>
+      <button class="role-btn" onclick="selectRole('assistant')" id="btn-assistant">
+        <span class="icon">🏋️</span>
+        <span>مساعد</span>
+      </button>
+    </div>
+    
+    <div class="error-msg" id="error-msg"></div>
+    
+    <!-- Admin Login -->
+    <form id="admin-form" class="login-form active">
+      <div class="form-group">
+        <label>اسم المستخدم</label>
+        <input type="text" id="admin-user" placeholder="أدخل اسم المستخدم" required>
+      </div>
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input type="password" id="admin-pass" placeholder="أدخل كلمة المرور" required>
+      </div>
+      <button type="submit" class="btn-submit">🔑 تسجيل دخول</button>
+    </form>
+    
+    <!-- Assistant Login -->
+    <form id="assistant-form" class="login-form">
+      <div class="form-group">
+        <label>اسمك</label>
+        <input type="text" id="assistant-name" placeholder="أدخل اسمك" required>
+      </div>
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input type="password" id="assistant-pass" placeholder="أدخل كلمة المرور" required>
+      </div>
+      <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #2196F3, #64B5F6);">🏋️ تسجيل دخول</button>
+    </form>
+    
+    <a href="index.html" class="back-link">← العودة للرئيسية</a>
+  </div>
+
+  <script>
+    let currentRole = 'admin';
+    
+    // Check if already logged in
+    if (localStorage.getItem('gym_admin_logged') === 'true') window.location.href = 'admin-light.html';
+    if (localStorage.getItem('gym_assistant_logged') === 'true') window.location.href = 'assistant-dashboard-light.html';
+    
+    function selectRole(role) {
+      currentRole = role;
+      document.querySelectorAll('.role-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.getElementById('btn-' + role).classList.add('active');
+      document.querySelectorAll('.login-form').forEach(function(f) { f.classList.remove('active'); });
+      document.getElementById(role + '-form').classList.add('active');
+      document.getElementById('error-msg').classList.remove('show');
+    }
+    
+    // Admin login
+    document.getElementById('admin-form').onsubmit = function(e) {
+      e.preventDefault();
+      var user = document.getElementById('admin-user').value;
+      var pass = document.getElementById('admin-pass').value;
+      var btn = this.querySelector('.btn-submit');
+      
+      if (user === 'adaoudi' && pass === 'fitness2026@') {
+        localStorage.setItem('gym_admin_logged', 'true');
+        localStorage.setItem('gym_admin_user', user);
+        btn.textContent = '✓ جاري الدخول...';
+        setTimeout(function() { window.location.href = 'admin-light.html'; }, 500);
+      } else {
+        showError('❌ اسم المستخدم أو كلمة المرور غير صحيحة');
+      }
+    };
+    
+    // Assistant login
+    document.getElementById('assistant-form').onsubmit = function(e) {
+      e.preventDefault();
+      var name = document.getElementById('assistant-name').value;
+      var pass = document.getElementById('assistant-pass').value;
+      var btn = this.querySelector('.btn-submit');
+      
+      if (pass === 'clubfitness2026@') {
+        // Auto-add assistant if not exists
+        var assistants = JSON.parse(localStorage.getItem('gym_assistants')) || [];
+        if (!assistants.find(function(a) { return a.name === name; })) {
+          assistants.push({ id: Date.now(), name: name, role: 'مساعد', status: 'active', phone: '', email: '' });
+          localStorage.setItem('gym_assistants', JSON.stringify(assistants));
+        }
+        localStorage.setItem('gym_assistant_logged', 'true');
+        localStorage.setItem('gym_assistant_name', name);
+        btn.textContent = '✓ جاري الدخول...';
+        setTimeout(function() { window.location.href = 'assistant-dashboard-light.html'; }, 500);
+      } else {
+        showError('❌ كلمة المرور غير صحيحة');
+      }
+    };
+    
+    function showError(msg) {
+      var el = document.getElementById('error-msg');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+    
+    // Navigation functions
+    function scrollUp() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function scrollDown() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+    
+    function goHome() {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

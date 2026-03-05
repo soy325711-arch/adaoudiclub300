@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم المساعد - Al-Daoudi Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Cairo', 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1a1a2e, #0f0f1a); min-height: 100vh; }
+    .container { display: flex; min-height: 100vh; }
+    .sidebar { width: 240px; background: #1a1a2e; padding: 1.5rem 1rem; color: white; }
+    .logo { text-align: center; font-size: 1.4rem; font-weight: bold; margin-bottom: 1.5rem; color: #FF6B35; }
+    .menu { list-style: none; }
+    .menu li { margin-bottom: 0.3rem; }
+    .menu a { display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem; color: #aaa; text-decoration: none; border-radius: 10px; transition: 0.3s; }
+    .menu a:hover, .menu a.active { background: #FF6B35; color: white; }
+    .main { flex: 1; padding: 1.5rem; overflow-y: auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .header h1 { color: white; font-size: 1.5rem; }
+    .btn-logout { background: #F44336; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat { background: #1a1a2e; padding: 1.2rem; border-radius: 14px; display: flex; align-items: center; gap: 1rem; }
+    .stat-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+    .stat-icon.orange { background: #FF6B35; }
+    .stat-icon.green { background: #4CAF50; }
+    .stat-icon.blue { background: #2196F3; }
+    .stat h3 { color: white; font-size: 1.5rem; }
+    .stat p { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+    .card { background: #1a1a2e; border-radius: 16px; padding: 1.2rem; margin-bottom: 1.5rem; }
+    .card h3 { color: white; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .msg-item { padding: 1rem; border-radius: 10px; margin-bottom: 0.8rem; background: rgba(0,0,0,0.2); }
+    .msg-item.unread { border-right: 3px solid #2196F3; }
+    .msg-name { color: white; font-weight: 600; margin-bottom: 0.3rem; }
+    .msg-text { color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.5; }
+    .msg-date { color: rgba(255,255,255,0.4); font-size: 0.75rem; margin-top: 0.5rem; }
+    .empty { text-align: center; color: rgba(255,255,255,0.4); padding: 2rem; }
+    .badge { background: #FF6B35; color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; margin-right: 0.5rem; }
+    @media (max-width: 768px) { .container { flex-direction: column; } .sidebar { width: 100%; padding: 1rem; } .menu { display: flex; flex-wrap: wrap; gap: 0.5rem; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="logo">💪 Al-Daoudi</div>
+      <ul class="menu">
+        <li><a href="#" class="active" onclick="show('dashboard')">📊 الرئيسية</a></li>
+        <li><a href="#" onclick="show('members')">👥 الأعضاء</a></li>
+        <li><a href="#" onclick="show('messages')">📩 الرسائل <span class="badge" id="msg-badge">0</span></a></li>
+        <li><a href="index.html">🏠 الموقع</a></li>
+      </ul>
+    </aside>
+    <main class="main">
+      <div class="header">
+        <h1 id="page-title">لوحة التحكم</h1>
+        <button class="btn-logout" onclick="logout()">🚪 خروج</button>
+      </div>
+      <div id="page-dashboard">
+        <div class="stats">
+          <div class="stat"><div class="stat-icon orange">👥</div><div><h3 id="members-count">0</h3><p>الأعضاء</p></div>
+          <div class="stat"><div class="stat-icon green">🏋️</div><div><h3 id="classes-count">0</h3><p>الحصص</p></div>
+        </div>
+      <div id="page-messages" style="display:none;">
+        <div class="card">
+          <h3>📩 الرسائل الواردة</h3>
+          <div id="messages-list"></div>
+      </div>
+      <div id="page-members" style="display:none;">
+        <div class="card">
+          <h3>👥 قائمة الأعضاء</h3>
+          <div id="members-list"></div>
+      </div>
+    </main>
+  </div>
+  <script>
+    if (localStorage.getItem('gym_assistant_logged') !== 'true') window.location.href = 'login.html';
+    var members = JSON.parse(localStorage.getItem('gym_members')) || [];
+    var classes = JSON.parse(localStorage.getItem('gym_classes')) || [];
+    
+    function show(page) {
+      document.querySelectorAll('.main > div').forEach(function(d) { d.style.display = 'none'; });
+      document.getElementById('page-' + page).style.display = 'block';
+      document.querySelectorAll('.menu a').forEach(function(a) { a.classList.remove('active'); });
+      event.target.closest('a').classList.add('active');
+      document.getElementById('page-title').textContent = page === 'messages' ? 'الرسائل' : 'لوحة التحكم';
+      if (page === 'messages') loadMessages();
+      if (page === 'members') loadMembers();
+    }
+    
+    document.getElementById('members-count').textContent = members.length;
+    document.getElementById('classes-count').textContent = classes.length;
+    document.getElementById('msg-badge').textContent = (JSON.parse(localStorage.getItem('gym_messages')) || []).filter(function(m) { return m.status === 'unread'; }).length;
+    
+    function loadMessages() {
+      var msgs = JSON.parse(localStorage.getItem('gym_messages')) || [];
+      var list = document.getElementById('messages-list');
+      if (msgs.length === 0) { list.innerHTML = '<div class="empty">لا توجد رسائل</div>'; return; }
+      list.innerHTML = msgs.slice(0,10).map(function(m) {
+        return '<div class="msg-item ' + (m.status === 'unread' ? 'unread' : '') + '"><div class="msg-name">' + (m.name || 'بدون اسم') + '</div><div class="msg-text">' + m.message + '</div><div class="msg-date">' + new Date(m.date).toLocaleDateString('ar') + '</div>';
+      }).join('');
+    }
+    
+    function loadMembers() {
+      var list = document.getElementById('members-list');
+      if (members.length === 0) { list.innerHTML = '<div class="empty">لا توجد بيانات</div>'; return; }
+      list.innerHTML = members.slice(0,10).map(function(m) {
+        return '<div class="msg-item"><div class="msg-name">' + m.name + '</div><div class="msg-text">' + m.email + ' | ' + (m.phone || '-') + '</div>';
+      }).join('');
+    }
+    
+    function logout() { localStorage.removeItem('gym_assistant_logged'); window.location.href = 'login.html'; }
+  </script>
+</body>
+</html>

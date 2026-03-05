@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم - نادى الداودي</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    /* Enhanced Admin Dashboard Styles */
+    :root {
+      --primary: #FF6B35;
+      --primary-light: #ff8f5a;
+      --primary-dark: #e55a2b;
+      --success: #4CAF50;
+      --warning: #FFC107;
+      --danger: #F44336;
+      --info: #2196F3;
+      --purple: #9C27B0;
+      --dark: #1A1A2E;
+      --darker: #0F0F1A;
+    }
+
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+    }
+
+    /* Enhanced Sidebar */
+    .admin-sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: 4px 0 30px rgba(0,0,0,0.4);
+      z-index: 100;
+    }
+
+    .admin-logo {
+      padding: 2rem 1.5rem;
+      font-size: 1.8rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .admin-menu {
+      list-style: none;
+      padding: 1rem 0;
+    }
+
+    .admin-menu li {
+      margin: 0.3rem 0.8rem;
+    }
+
+    .admin-menu li a {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .admin-menu li a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .admin-menu li a:hover::before,
+    .admin-menu li a.active::before {
+      opacity: 1;
+    }
+
+    .admin-menu li a:hover,
+    .admin-menu li a.active {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+      box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
+      transform: translateX(5px);
+    }
+
+    .admin-menu li a .icon {
+      font-size: 1.3rem;
+    }
+
+    /* Main Content */
+    .admin-main {
+      flex: 1;
+      margin-right: 280px;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+      min-height: 100vh;
+    }
+
+    /* Enhanced Header */
+    .admin-header {
+      background: rgba(26, 26, 46, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .admin-header h2 {
+      color: white;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .admin-header h2::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(180deg, #FF6B35, #ff8f5a);
+      border-radius: 2px;
+    }
+
+    .admin-user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .admin-user-avatar {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .admin-user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-user-info .name {
+      color: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .admin-user-info .role {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.8rem;
+    }
+
+    .btn-logout {
+      background: linear-gradient(135deg, #F44336, #EF5350);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+    }
+
+    .btn-logout:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+    }
+
+    /* Admin Content */
+    .admin-content {
+      padding: 2rem;
+    }
+
+    /* Page Header */
+    .admin-page-header {
+      margin-bottom: 2rem;
+    }
+
+    .admin-page-header h1 {
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .admin-page-header .breadcrumb {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.9rem;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 1.8rem;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -30%;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(255, 107, 53, 0.15), transparent 60%);
+      border-radius: 50%;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      border-color: rgba(255, 107, 53, 0.3);
+    }
+
+    .stat-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-icon.orange {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+    }
+
+    .stat-icon.green {
+      background: linear-gradient(135deg, #4CAF50, #81C784);
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+    }
+
+    .stat-icon.blue {
+      background: linear-gradient(135deg, #2196F3, #64B5F6);
+      box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+    }
+
+    .stat-icon.purple {
+      background: linear-gradient(135deg, #9C27B0, #BA68C8);
+      box-shadow: 0 8px 25px rgba(156, 39, 176, 0.4);
+    }
+
+    .stat-icon.teal {
+      background: linear-gradient(135deg, #00BCD4, #26C6DA);
+      box-shadow: 0 8px 25px rgba(0, 188, 212, 0.4);
+    }
+
+    .stat-info h3 {
+      color: white;
+      font-size: 2.2rem;
+      margin-bottom: 0.3rem;
+      font-weight: 700;
+    }
+
+    .stat-info p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .quick-action-btn {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      color: white;
+    }
+
+    .quick-action-btn:hover {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(255, 107, 53, 0.3);
+    }
+
+    .quick-action-btn .icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .quick-action-btn .label {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    /* Data Card */
+    .data-card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      overflow: hidden;
+    }
+
+    .data-card-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .data-card-header h3 {
+      color: white;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .data-card-header h3::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #FF6B35;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .data-card-header a {
+      color: #FF6B35;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .data-card-header a:hover {
+      color: #ff8f5a;
+      transform: translateX(-5px);
+    }
+
+    /* Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      background: rgba(0,0,0,0.3);
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 1.2rem 1.5rem;
+      text-align: right;
+    }
+
+    .data-table td {
+      padding: 1rem 1.5rem;
+      color: rgba(255,255,255,0.85);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .data-table tr:hover td {
+      background: rgba(255, 107, 53, 0.05);
+    }
+
+    .status-badge {
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-badge.active {
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(76, 175, 80, 0.1));
+      color: #4CAF50;
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+
+    .status-badge.inactive {
+      background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(244, 67, 54, 0.1));
+      color: #F44336;
+      border: 1px solid rgba(244, 67, 54, 0.3);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Loading */
+    .loading-spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(255, 107, 53, 0.2);
+      border-top: 3px solid #FF6B35;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+      }
+      .admin-sidebar.active {
+        transform: translateX(0);
+      }
+      .admin-main {
+        margin-right: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+      .admin-header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Admin Layout -->
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-logo">💪 FitLife</div>
+      <ul class="admin-menu">
+        <li><a href="admin.html" class="active"><span class="icon">📊</span> لوحة التحكم</a></li>
+        <li><a href="admin-members.html"><span class="icon">👥</span> الأعضاء</a></li>
+        <li><a href="admin-classes.html"><span class="icon">🏋️</span> الحصص</a></li>
+        <li><a href="admin-bookings.html"><span class="icon">📅</span> الحجوزات</a></li>
+        <li><a href="admin-memberships.html"><span class="icon">💳</span> الاشتراكات</a></li>
+        <li><a href="admin-assistants.html"><span class="icon">👨‍🏫</span> المساعدين</a></li>
+        <li><a href="index.html"><span class="icon">🏠</span> عرض الموقع</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="admin-header">
+        <h2>نظرة عامة</h2>
+        <div class="admin-user">
+          <div class="admin-user-avatar">م</div>
+          <div class="admin-user-info">
+            <span class="name">المدير</span>
+            <span class="role">مدير النظام</span>
+          </div>
+          <button class="btn-logout" id="logout-btn">🚪 تسجيل خروج</button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <!-- Page Header -->
+        <div class="admin-page-header">
+          <div>
+            <h1>Welcome Back! 👋</h1>
+            <p class="breadcrumb">Dashboard / Overview</p>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card animate-fade-in-up delay-1">
+            <div class="stat-icon orange">
+              <span>👥</span>
+            </div>
+            <div class="stat-info">
+              <h3 id="total-members">0</h3>
+              <p>Total Members</p>
+            </div>
+          </div>
+          <div class="stat-card animate-fade-in-up delay-2">
+            <div class="stat-icon green">
+              <span>✅</span>
+            </div>
+            <div class="stat-info">
+              <h3 id="active-members">0</h3>
+              <p>Active Members</p>
+            </div>
+          </div>
+          <div class="stat-card animate-fade-in-up delay-3">
+            <div class="stat-icon blue">
+              <span>📅</span>
+            </div>
+            <div class="stat-info">
+              <h3 id="today-bookings">0</h3>
+              <p>Today's Bookings</p>
+            </div>
+          </div>
+          <div class="stat-card animate-fade-in-up delay-4">
+            <div class="stat-icon purple">
+              <span>💰</span>
+            </div>
+            <div class="stat-info">
+              <h3 id="total-revenue">$0</h3>
+              <p>Monthly Revenue</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <button class="quick-action-btn" onclick="window.location.href='admin-members.html'">
+            <div class="icon">➕</div>
+            <div class="label">Add New Member</div>
+          </button>
+          <button class="quick-action-btn" onclick="window.location.href='admin-classes.html'">
+            <div class="icon">🏋️</div>
+            <div class="label">Add New Class</div>
+          </button>
+          <button class="quick-action-btn" onclick="window.location.href='admin-bookings.html'">
+            <div class="icon">📋</div>
+            <div class="label">View Bookings</div>
+          </button>
+          <button class="quick-action-btn" onclick="window.location.href='admin-memberships.html'">
+            <div class="icon">💳</div>
+            <div class="label">Manage Plans</div>
+          </button>
+        </div>
+
+        <!-- Recent Members -->
+        <div class="data-card">
+          <div class="data-card-header">
+            <h3>📋 Recent Members</h3>
+            <a href="admin-members.html" style="color: var(--primary); text-decoration: none; font-weight: 500;">View All →</a>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>👤 Name</th>
+                <th>📧 Email</th>
+                <th>💳 Membership</th>
+                <th>📊 Status</th>
+              </tr>
+            </thead>
+            <tbody id="recent-members">
+              <!-- Will be loaded dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/admin.js"></script>
+  <script>
+    // Check auth and load dashboard
+    // Check auth using localStorage (simpler approach that works with the current login system)
+    const isAuthenticated = localStorage.getItem('gym_admin_logged') === 'true';
+    
+    if (!isAuthenticated) {
+      window.location.href = '/login.html';
+    } else {
+      loadDashboard();
+    }
+
+    async function loadDashboard() {
+      // Show loading state
+      document.getElementById('total-members').innerHTML = '<div class="loading-spinner"></div>';
+      document.getElementById('active-members').innerHTML = '<div class="loading-spinner"></div>';
+      document.getElementById('today-bookings').innerHTML = '<div class="loading-spinner"></div>';
+      document.getElementById('total-revenue').innerHTML = '<div class="loading-spinner"></div>';
+      
+      try {
+        const response = await fetch('/api/admin/stats');
+        const stats = await response.json();
+        
+        // Animate numbers
+        animateValue('total-members', 0, stats.totalMembers, 1000);
+        animateValue('active-members', 0, stats.activeMembers, 1000);
+        animateValue('today-bookings', 0, stats.todayBookings, 1000);
+        
+        // Revenue with dollar sign
+        const revenueEl = document.getElementById('total-revenue');
+        revenueEl.textContent = '$' + parseFloat(stats.totalRevenue).toLocaleString();
+        
+        // Load recent members
+        const membersResponse = await fetch('/api/admin/members');
+        const members = await membersResponse.json();
+        
+        const recentMembers = document.getElementById('recent-members');
+        if (members.length === 0) {
+          recentMembers.innerHTML = '<tr><td colspan="4" class="empty-state">No members found</td></tr>';
+        } else {
+          recentMembers.innerHTML = members.slice(0, 5).map((member, index) => `
+            <tr style="animation-delay: ${index * 0.1}s" class="animate-fade-in">
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <div style="width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), #ff8f5a); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">${member.name.charAt(0)}</div>
+                  ${member.name}
+                </div>
+              </td>
+              <td>${member.email}</td>
+              <td><span style="background: rgba(255, 107, 53, 0.1); color: var(--primary); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">${member.membership_type || 'Basic'}</span></td>
+              <td><span class="status-badge ${member.status}">${member.status}</span></td>
+            </tr>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+        document.getElementById('total-members').textContent = '0';
+        document.getElementById('active-members').textContent = '0';
+        document.getElementById('today-bookings').textContent = '0';
+        document.getElementById('total-revenue').textContent = '$0';
+      }
+    }
+
+    // Animate number counting
+    function animateValue(id, start, end, duration) {
+      const el = document.getElementById(id);
+      const range = end - start;
+      const startTime = performance.now();
+      
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const value = Math.floor(start + (range * progress));
+        el.textContent = value;
+        
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+      
+      requestAnimationFrame(update);
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      // Clear localStorage
+      localStorage.removeItem('gym_admin_logged');
+      localStorage.removeItem('gym_admin_user');
+      localStorage.removeItem('gym_user_type');
+      await fetch('/api/admin/logout', { method: 'POST' });
+      window.location.href = '/login.html';
+    });
+  </script>
+</body>
+</html>

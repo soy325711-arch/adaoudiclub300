@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin-styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    /* Admin Styles */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); min-height: 100vh; }
+    
+    .admin-container { display: flex; min-height: 100vh; }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+      padding: 2rem 1rem;
+      color: white;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+    }
+    
+    .logo {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .menu { list-style: none; }
+    .menu li { margin-bottom: 0.5rem; }
+    .menu a {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      color: #aaa;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+    .menu a:hover, .menu a.active {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+    }
+    
+    /* Main Content */
+    .main {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .header h1 { color: white; font-size: 1.8rem; }
+    
+    .logout-btn {
+      background: linear-gradient(135deg, #F44336, #E57373);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    /* Navigation Buttons - Scroll Up/Down */
+    .nav-buttons {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
+    }
+    
+    .nav-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    .nav-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    .nav-btn.scroll-up { background: linear-gradient(135deg, #2196F3, #1976D2); color: white; }
+    .nav-btn.scroll-down { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+    .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 1.8rem;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: all 0.3s;
+    }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    
+    .stat-icon {
+      width: 65px;
+      height: 65px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+    }
+    .stat-icon.orange { background: linear-gradient(135deg, #FF6B35, #ff8f5a); }
+    .stat-icon.green { background: linear-gradient(135deg, #4CAF50, #81C784); }
+    .stat-icon.blue { background: linear-gradient(135deg, #2196F3, #64B5F6); }
+    .stat-icon.purple { background: linear-gradient(135deg, #9C27B0, #BA68C8); }
+    .stat-icon.teal { background: linear-gradient(135deg, #00BCD4, #26C6DA); }
+    .stat-icon.red { background: linear-gradient(135deg, #F44336, #EF5350); }
+    .stat-icon.pink { background: linear-gradient(135deg, #E91E63, #F06292); }
+    .stat-icon.cyan { background: linear-gradient(135deg, #00BCD4, #4DD0E1); }
+    .stat-icon.amber { background: linear-gradient(135deg, #FFC107, #FFD54F); }
+    .stat-icon.indigo { background: linear-gradient(135deg, #3F51B5, #7986CB); }
+    
+    .stat-info h3 { color: white; font-size: 2rem; margin-bottom: 0.3rem; }
+    .stat-info p { color: rgba(255,255,255,0.6); font-size: 0.9rem; text-transform: uppercase; }
+    
+    /* Cards */
+    .card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-header h3 { color: white; }
+    
+    .add-btn {
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    /* Table */
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 1rem 1.5rem; text-align: right; }
+    th {
+      background: rgba(0,0,0,0.3);
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+    td { color: rgba(255,255,255,0.85); border-bottom: 1px solid rgba(255,255,255,0.03); }
+    tr:hover td { background: rgba(255,107,53,0.05); }
+    
+    .status-badge {
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status-active, .status-approved {
+      background: linear-gradient(135deg, rgba(76,175,80,0.2), rgba(76,175,80,0.1));
+      color: #4CAF50;
+      border: 1px solid rgba(76,175,80,0.3);
+    }
+    .status-inactive, .status-pending, .status-rejected {
+      background: linear-gradient(135deg, rgba(244,67,54,0.2), rgba(244,67,54,0.1));
+      color: #F44336;
+      border: 1px solid rgba(244,67,54,0.3);
+    }
+    .status-replied {
+      background: linear-gradient(135deg, rgba(33,150,243,0.2), rgba(33,150,243,0.1));
+      color: #2196F3;
+      border: 1px solid rgba(33,150,243,0.3);
+    }
+    
+    .action-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn-edit, .btn-delete, .btn-reply, .btn-approve {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .btn-edit { background: #2196F3; color: white; }
+    .btn-delete { background: #F44336; color: white; }
+    .btn-reply { background: #4CAF50; color: white; }
+    .btn-approve { background: #00BCD4; color: white; }
+    
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.show { display: flex; }
+    
+    .modal-content {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 2rem;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .modal h2 { color: white; margin-bottom: 1.5rem; }
+    
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #FF6B35; }
+    
+    .modal-btns { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    .modal-btns button {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .btn-save { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+    .btn-cancel { background: rgba(255,255,255,0.1); color: white; }
+    
+    /* Empty State */
+    .empty-state { text-align: center; padding: 3rem; color: rgba(255,255,255,0.5); }
+    
+    /* Subscription & Message Items */
+    .subscription-item, .message-item {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .subscription-item.unread, .message-item.unread {
+      background: rgba(255,107,53,0.08);
+    }
+    
+    .subscription-header, .message-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subscription-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .subscription-photo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid #FF6B35;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    
+    .subscription-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .subscription-photo .placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.1);
+      font-size: 1.5rem;
+    }
+    
+    .subscription-name {
+      color: white;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    
+    .subscription-contact {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+    }
+    
+    .subscription-date {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.75rem;
+    }
+    
+    .subscription-details {
+      color: rgba(255,255,255,0.8);
+      line-height: 1.6;
+      margin: 0.5rem 0;
+    }
+    
+    .subscription-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    /* Stats Page */
+    .stats-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .stat-detail-card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 2rem;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .stat-detail-card h3 {
+      color: white;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .stat-detail-card .value {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #FF6B35;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-detail-card .label {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.9rem;
+    }
+    
+    .progress-bar {
+      height: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 5px;
+      margin-top: 1rem;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      border-radius: 5px;
+      transition: width 0.5s;
+    }
+    
+    /* Reply Section */
+    .reply-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .reply-content {
+      background: rgba(0,0,0,0.2);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+    .reply-label {
+      color: #4CAF50;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .reply-text {
+      color: rgba(255,255,255,0.9);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .admin-container { flex-direction: column; }
+      .sidebar { width: 100%; padding: 1rem; }
+      .menu { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .menu a { padding: 0.5rem 1rem; font-size: 0.9rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">💪 Al-Daoudi Club</div>
+      <ul class="menu">
+        <li><a href="#" class="active" onclick="showPage('dashboard')">📊 لوحة التحكم</a></li>
+        <li><a href="#" onclick="showPage('stats')">📈 الإحصائيات</a></li>
+        <li><a href="#" onclick="showPage('members')">👥 الأعضاء</a></li>
+        <li><a href="#" onclick="showPage('subscriptions')">📝 طلبات الاشتراك</a></li>
+        <li><a href="#" onclick="showPage('messages')">📩 الرسائل</a></li>
+        <li><a href="admin-assistants.html">👨‍🏫 المساعدين</a></li>
+        <li><a href="admin-memberships.html">💳 الاشتراكات</a></li>
+        <li><a href="website-settings.html">🌐 إعدادات الموقع</a></li>
+        <li><a href="admin-services.html">🛠️ الخدمات</a></li>
+        <li><a href="admin-schedule.html">📅 الجدول</a></li>
+        <li><a href="index.html">🏠 الموقع</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="header">
+        <h1 id="page-title">لوحة التحكم</h1>
+        <button class="logout-btn" onclick="logout()">🚪 تسجيل خروج</button>
+      </div>
+
+      <!-- Dashboard Page -->
+      <div id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon orange">👥</div>
+            <div class="stat-info">
+              <h3 id="total-members">0</h3>
+              <p>إجمالي الأعضاء</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <div class="stat-info">
+              <h3 id="active-members">0</h3>
+              <p>أعضاء نشطون</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">🏋️</div>
+            <div class="stat-info">
+              <h3 id="total-classes">0</h3>
+              <p>عدد الحصص</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>👥 أحدث الأعضاء</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>الصورة</th>
+                <th>الاسم</th>
+                <th>البريد الإلكتروني</th>
+                <th>الباقة</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="members-table">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Stats Page -->
+      <div id="page-stats" style="display: none;">
+        <!-- Gender Distribution Chart -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <h3>📊 توزيع الأعضاء حسب الجنس</h3>
+          </div>
+          <div style="padding: 2rem;">
+            <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 2rem;">
+              <div style="text-align: center;">
+                <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #2196F3, #64B5F6); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);">
+                  <span style="color: white; font-size: 2.5rem; font-weight: bold;" id="male-count">0</span>
+                </div>
+                <span style="color: #2196F3; font-weight: bold; font-size: 1.2rem;">👨 رجال</span>
+              </div>
+              <div style="text-align: center;">
+                <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #E91E63, #F06292); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4);">
+                  <span style="color: white; font-size: 2.5rem; font-weight: bold;" id="female-count">0</span>
+                </div>
+                <span style="color: #E91E63; font-weight: bold; font-size: 1.2rem;">👩 نساء</span>
+              </div>
+            </div>
+            <!-- Progress Bars -->
+            <div style="margin-top: 2rem;">
+              <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                  <span style="color: #2196F3; font-weight: 600;">👨 الرجال</span>
+                  <span id="male-percent" style="color: #2196F3;">0%</span>
+                </div>
+                <div class="progress-bar" style="height: 15px; border-radius: 10px;">
+                  <div id="male-bar" class="progress-fill" style="width: 0%; background: linear-gradient(135deg, #2196F3, #64B5F6);"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                  <span style="color: #E91E63; font-weight: 600;">👩 النساء</span>
+                  <span id="female-percent" style="color: #E91E63;">0%</span>
+                </div>
+                <div class="progress-bar" style="height: 15px; border-radius: 10px;">
+                  <div id="female-bar" class="progress-fill" style="width: 0%; background: linear-gradient(135deg, #E91E63, #F06292);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-detail-grid">
+          <div class="stat-detail-card">
+            <h3>👥 إجمالي الأعضاء</h3>
+            <div class="value" id="stats-total-members">0</div>
+            <div class="label">عضو مسجل</div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+          
+          <div class="stat-detail-card">
+            <h3>✅ الأعضاء النشطون</h3>
+            <div class="value" id="stats-active-members">0</div>
+            <div class="label">عضو نشط</div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 0%;" id="active-progress"></div>
+            </div>
+          </div>
+          
+          <div class="stat-detail-card">
+            <h3>❌ الأعضاء غير النشطون</h3>
+            <div class="value" id="stats-inactive-members">0</div>
+            <div class="label">عضو غير نشط</div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 0%; background: linear-gradient(135deg, #F44336, #EF5350);" id="inactive-progress"></div>
+            </div>
+          </div>
+          
+          <div class="stat-detail-card">
+            <h3>🏋️ الحصص المتاحة</h3>
+            <div class="value" id="stats-classes">0</div>
+            <div class="label">حصة</div>
+          </div>
+          
+          <div class="stat-detail-card">
+            <h3>💰 إجمالي الإيرادات</h3>
+            <div class="value" id="stats-revenue" style="color: #4CAF50;">0 MAD</div>
+            <div class="label">من جميع الاشتراكات</div>
+          </div>
+          
+          <div class="stat-detail-card">
+            <h3>📝 طلبات الانتظار</h3>
+            <div class="value" id="stats-pending">0</div>
+            <div class="label">طلب بانتظار الموافقة</div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 0%; background: linear-gradient(135deg, #FFC107, #FFD54F);" id="pending-progress"></div>
+            </div>
+          </div>
+          
+          <div class="stat-detail-card">
+            <h3>💳 الباقات المباعة</h3>
+            <div class="value" id="stats-packages">0</div>
+            <div class="label">باقة مباعة</div>
+          </div>
+          
+          <div class="stat-detail-card">
+            <h3>📩 الرسائل الجديدة</h3>
+            <div class="value" id="stats-messages">0</div>
+            <div class="label">رسالة غير مقروءة</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Members Page -->
+      <div id="page-members" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>👥 إدارة الأعضاء</h3>
+            <button class="add-btn" onclick="openModal('member')">➕ إضافة عضو</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>الصورة</th>
+                <th>الاسم</th>
+                <th>العمر</th>
+                <th>البريد الإلكتروني</th>
+                <th>الهاتف</th>
+                <th>الباقة</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="all-members-table">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Classes Page -->
+      <div id="page-classes" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>🏋️ إدارة الحصص</h3>
+            <button class="add-btn" onclick="openModal('class')">➕ إضافة حصة</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>اسم الحصة</th>
+                <th>المدرب</th>
+                <th>اليوم</th>
+                <th>الوقت</th>
+                <th>المدة</th>
+                <th>السعة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="classes-table">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Clients Page -->
+      <div id="page-clients" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>👤 إدارة العملاء</h3>
+            <button class="add-btn" onclick="openModal('client')">➕ إضافة عميل</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>الاسم</th>
+                <th>العمر</th>
+                <th>البريد الإلكتروني</th>
+                <th>الهاتف</th>
+                <th>الباقة</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="clients-table">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Subscriptions Page -->
+      <div id="page-subscriptions" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>📝 طلبات الاشتراك الجديدة</h3>
+            <span id="pending-subscriptions-count" style="background: #FF6B35; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">0 طلب</span>
+          </div>
+          <div id="subscriptions-list">
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Page -->
+      <div id="page-messages" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>📩 الرسائل الواردة</h3>
+            <span id="unread-count" style="background: #F44336; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">0 غير مقروء</span>
+          </div>
+          <div id="messages-list">
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Member Modal -->
+  <div id="modal-member" class="modal">
+    <div class="modal-content">
+      <h2>➕ إضافة عضو جديد</h2>
+      <form id="form-member" onsubmit="saveMember(event)">
+        <div class="form-group">
+          <label>الاسم الكامل</label>
+          <input type="text" id="member-name" required>
+        </div>
+        <div class="form-group">
+          <label>العمر</label>
+          <input type="number" id="member-age" min="10" max="80">
+        </div>
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="member-email" required>
+        </div>
+        <div class="form-group">
+          <label>رقم الهاتف</label>
+          <input type="tel" id="member-phone">
+        </div>
+        <div class="form-group">
+          <label>نوع الاشتراك</label>
+          <select id="member-membership">
+            <option value="شهر واحد - 150 MAD">شهر واحد - 150 MAD</option>
+            <option value="ثلاثة أشهر - 350 MAD">ثلاثة أشهر - 350 MAD</option>
+            <option value="ستة أشهر - 600 MAD">ستة أشهر - 600 MAD</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>الحالة</label>
+          <select id="member-status">
+            <option value="active">نشط</option>
+            <option value="inactive">غير نشط</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" id="member-password" placeholder="أدخل كلمة مرور للعميل">
+        </div>
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" onclick="closeModal('member')">إلغاء</button>
+          <button type="submit" class="btn-save">💾 حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Class Modal -->
+  <div id="modal-class" class="modal">
+    <div class="modal-content">
+      <h2>🏋️ إضافة حصة جديدة</h2>
+      <form id="form-class" onsubmit="saveClass(event)">
+        <div class="form-group">
+          <label>اسم الحصة</label>
+          <input type="text" id="class-name" required>
+        </div>
+        <div class="form-group">
+          <label>اسم المدرب</label>
+          <input type="text" id="class-instructor" required>
+        </div>
+        <div class="form-group">
+          <label>اليوم</label>
+          <select id="class-day">
+            <option value="Monday">الاثنين</option>
+            <option value="Tuesday">الثلاثاء</option>
+            <option value="Wednesday">الأربعاء</option>
+            <option value="Thursday">الخميس</option>
+            <option value="Friday">الجمعة</option>
+            <option value="Saturday">السبت</option>
+            <option value="Sunday">الأحد</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>الوقت</label>
+          <input type="time" id="class-time" required>
+        </div>
+        <div class="form-group">
+          <label>المدة (دقيقة)</label>
+          <input type="number" id="class-duration" value="60">
+        </div>
+        <div class="form-group">
+          <label>السعة</label>
+          <input type="number" id="class-capacity" value="20">
+        </div>
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" onclick="closeModal('class')">إلغاء</button>
+          <button type="submit" class="btn-save">💾 حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Membership Modal -->
+  <div id="modal-membership" class="modal">
+    <div class="modal-content">
+      <h2>💳 إضافة خطة اشتراك</h2>
+      <form id="form-membership" onsubmit="saveMembership(event)">
+        <div class="form-group">
+          <label>اسم الخطة</label>
+          <input type="text" id="membership-name" required>
+        </div>
+        <div class="form-group">
+          <label>السعر (MAD)</label>
+          <input type="number" id="membership-price" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label>المدة</label>
+          <select id="membership-duration">
+            <option value="شهر واحد">شهر واحد</option>
+            <option value="ثلاثة أشهر">ثلاثة أشهر</option>
+            <option value="ستة أشهر">ستة أشهر</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>المميزات (افصل بينها بفواصل)</label>
+          <input type="text" id="membership-features" placeholder="مثال: وصول كامل, parking مجاني">
+        </div>
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" onclick="closeModal('membership')">إلغاء</button>
+          <button type="submit" class="btn-save">💾 حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <div class="nav-buttons">
+    <button class="nav-btn scroll-up" onclick="scrollUp()" title="صعود للأعلى">▲</button>
+    <button class="nav-btn scroll-down" onclick="scrollDown()" title="هبوط للأسفل">▼</button>
+  </div>
+
+  <!-- Reply Modal -->
+  <div id="modal-reply" class="modal">
+    <div class="modal-content">
+      <h2>📩 إرسال رد</h2>
+      <form id="form-reply" onsubmit="sendReply(event)">
+        <input type="hidden" id="reply-msg-id">
+        <div class="form-group">
+          <label>إلى:</label>
+          <input type="text" id="reply-to" readonly>
+        </div>
+        <div class="form-group">
+          <label>الموضوع:</label>
+          <input type="text" id="reply-subject" required>
+        </div>
+        <div class="form-group">
+          <label>الرسالة:</label>
+          <textarea id="reply-message" required placeholder="اكتب ردك هنا..."></textarea>
+        </div>
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" onclick="closeModal('reply')">إلغاء</button>
+          <button type="submit" class="btn-save">📤 إرسال الرد</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Check if logged in
+    if (localStorage.getItem('gym_admin_logged') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    // Data Storage
+    let members = JSON.parse(localStorage.getItem('gym_members')) || [
+      { id: 1, name: 'أحمد محمد', age: 25, email: 'ahmed@example.com', phone: '0555123456', membership: 'شهر واحد - 150 MAD', status: 'active', joinDate: '2024-01-15', photo: null },
+      { id: 2, name: 'سارة علي', age: 22, email: 'sara@example.com', phone: '0555123457', membership: 'ستة أشهر - 600 MAD', status: 'active', joinDate: '2024-02-20', photo: null },
+      { id: 3, name: 'محمد خالد', age: 28, email: 'mohamed@example.com', phone: '0555123458', membership: 'شهر واحد - 150 MAD', status: 'active', joinDate: '2024-03-10', photo: null }
+    ];
+    
+    let classes = JSON.parse(localStorage.getItem('gym_classes')) || [
+      { id: 1, name: 'Yoga الصباح', instructor: 'سارة', day: 'Monday', time: '06:00', duration: 60, capacity: 20 },
+      { id: 2, name: 'HIIT', instructor: 'أحمد', day: 'Monday', time: '18:00', duration: 45, capacity: 15 },
+      { id: 3, name: 'تمارين قوى', instructor: 'خالد', day: 'Tuesday', time: '19:00', duration: 60, capacity: 10 }
+    ];
+    
+    let memberships = JSON.parse(localStorage.getItem('gym_memberships')) || [
+      { id: 1, name: 'شهر واحد', price: 150, duration: 'شهر واحد', features: 'وصول للمعدات,غرف locker' },
+      { id: 2, name: 'ثلاثة أشهر', price: 350, duration: 'ثلاثة أشهر', features: 'وصول كامل,حصص جماعية,حمام سباحة' },
+      { id: 3, name: 'ستة أشهر', price: 600, duration: 'ستة أشهر', features: 'وصول كامل,مدرب شخصي,سونا,حمام بخار' }
+    ];
+
+    // Save to localStorage
+    function saveData() {
+      localStorage.setItem('gym_members', JSON.stringify(members));
+      localStorage.setItem('gym_classes', JSON.stringify(classes));
+      localStorage.setItem('gym_memberships', JSON.stringify(memberships));
+    }
+
+    // Page Navigation
+    function showPage(page) {
+      document.querySelectorAll('.main > div').forEach(div => div.style.display = 'none');
+      document.getElementById('page-' + page).style.display = 'block';
+      document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
+      event.target.classList.add('active');
+      
+    const titles = { 
+        dashboard: 'لوحة التحكم', 
+        stats: 'الإحصائيات',
+        members: 'إدارة الأعضاء', 
+        classes: 'إدارة الحصص', 
+        clients: 'إدارة العملاء',
+        subscriptions: 'طلبات الاشتراك',
+        messages: 'الرسائل الواردة' 
+      };
+      document.getElementById('page-title').textContent = titles[page];
+      
+      if (page === 'dashboard') loadDashboard();
+      if (page === 'stats') loadStats();
+      if (page === 'members') loadMembers();
+      if (page === 'classes') loadClasses();
+      if (page === 'clients') loadClients();
+      if (page === 'subscriptions') loadSubscriptions();
+      if (page === 'messages') loadMessages();
+    }
+
+// Load Dashboard
+    function loadDashboard() {
+      const active = members.filter(m => m.status === 'active').length;
+      
+      document.getElementById('total-members').textContent = members.length;
+      document.getElementById('active-members').textContent = active;
+      document.getElementById('total-classes').textContent = classes.length;
+      
+      // Also load subscription and message counts for dashboard
+      const subscriptions = JSON.parse(localStorage.getItem('gym_subscriptions')) || [];
+      const messages = JSON.parse(localStorage.getItem('gym_messages')) || [];
+      const pendingCount = subscriptions.filter(s => s.status === 'pending').length;
+      const unreadMessages = messages.filter(m => m.status === 'unread').length;
+      
+      // Store these for stats page
+      window.dashboardStats = {
+        pendingSubscriptions: pendingCount,
+        unreadMessages: unreadMessages
+      };
+      
+      const tbody = document.getElementById('members-table');
+      tbody.innerHTML = members.slice(0, 5).map(m => `
+        <tr>
+          <td>${m.photo ? `<img src="${m.photo}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` : '👤'}</td>
+          <td>${m.name}</td>
+          <td>${m.email}</td>
+          <td><span style="background: rgba(255,107,53,0.1); color: #FF6B35; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">${m.membership}</span></td>
+          <td><span class="status-badge status-${m.status}">${m.status === 'active' ? 'نشط' : 'غير نشط'}</span></td>
+        </tr>
+      `).join('') || '<tr><td colspan="5" class="empty-state">لا توجد بيانات</td></tr>';
+    }
+
+    // Load Stats
+    function loadStats() {
+      const active = members.filter(m => m.status === 'active').length;
+      const inactive = members.filter(m => m.status === 'inactive').length;
+      const subscriptions = JSON.parse(localStorage.getItem('gym_subscriptions')) || [];
+      const approvedSubscriptions = subscriptions.filter(s => s.status === 'approved');
+      const pending = subscriptions.filter(s => s.status === 'pending').length;
+      const messages = JSON.parse(localStorage.getItem('gym_messages')) || [];
+      const unreadMessages = messages.filter(m => m.status === 'unread').length;
+      
+      // Calculate revenue from approved subscriptions
+      let revenue = 0;
+      approvedSubscriptions.forEach(sub => {
+        if (sub.package === '1month') revenue += 150;
+        else if (sub.package === '3months') revenue += 350;
+        else if (sub.package === '6months') revenue += 600;
+      });
+      
+      // Add revenue from existing members
+      members.forEach(m => {
+        if (m.membership.includes('150')) revenue += 150;
+        else if (m.membership.includes('350')) revenue += 350;
+        else if (m.membership.includes('600')) revenue += 600;
+      });
+      
+      const totalMembers = members.length;
+      const activePercent = totalMembers > 0 ? (active / totalMembers) * 100 : 0;
+      const inactivePercent = totalMembers > 0 ? (inactive / totalMembers) * 100 : 0;
+      
+      document.getElementById('stats-total-members').textContent = totalMembers;
+      document.getElementById('stats-active-members').textContent = active;
+      document.getElementById('stats-inactive-members').textContent = inactive;
+      document.getElementById('stats-classes').textContent = classes.length;
+      document.getElementById('stats-revenue').textContent = revenue + ' MAD';
+      document.getElementById('stats-pending').textContent = pending;
+      document.getElementById('stats-packages').textContent = approvedSubscriptions.length + members.length;
+      document.getElementById('stats-messages').textContent = unreadMessages;
+      
+      document.getElementById('active-progress').style.width = activePercent + '%';
+      document.getElementById('inactive-progress').style.width = inactivePercent + '%';
+      document.getElementById('pending-progress').style.width = (pending > 0 ? 50 : 0) + '%';
+      
+      // Calculate gender distribution from approved subscriptions + members
+      let maleCount = 0;
+      let femaleCount = 0;
+      
+      // From approved subscriptions
+      approvedSubscriptions.forEach(sub => {
+        if (sub.gender === 'male') maleCount++;
+        else if (sub.gender === 'female') femaleCount++;
+      });
+      
+      // From members (check if they have gender stored)
+      members.forEach(m => {
+        if (m.gender === 'male') maleCount++;
+        else if (m.gender === 'female') femaleCount++;
+        else {
+          // Default: if no gender stored, count as male (since gym is mainly for men in this case)
+          maleCount++;
+        }
+      });
+      
+      const totalGender = maleCount + femaleCount;
+      const malePercent = totalGender > 0 ? (maleCount / totalGender) * 100 : 50;
+      const femalePercent = totalGender > 0 ? (femaleCount / totalGender) * 100 : 50;
+      
+      document.getElementById('male-count').textContent = maleCount;
+      document.getElementById('female-count').textContent = femaleCount;
+      document.getElementById('male-percent').textContent = Math.round(malePercent) + '%';
+      document.getElementById('female-percent').textContent = Math.round(femalePercent) + '%';
+      document.getElementById('male-bar').style.width = malePercent + '%';
+      document.getElementById('female-bar').style.width = femalePercent + '%';
+    }
+
+    // Load Members
+    function loadMembers() {
+      const tbody = document.getElementById('all-members-table');
+      tbody.innerHTML = members.map((m, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${m.photo ? `<img src="${m.photo}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` : '👤'}</td>
+          <td>${m.name}</td>
+          <td>${m.age || '-'}</td>
+          <td>${m.email}</td>
+          <td>${m.phone || '-'}</td>
+          <td>${m.membership}</td>
+          <td><span class="status-badge status-${m.status}">${m.status === 'active' ? 'نشط' : 'غير نشط'}</span></td>
+          <td class="action-btns">
+            <button class="btn-edit" onclick="editMember(${m.id})">✏️ تعديل</button>
+            <button class="btn-delete" onclick="deleteMember(${m.id})">🗑️ حذف</button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="9" class="empty-state">لا توجد بيانات</td></tr>';
+    }
+
+    // Load Classes
+    function loadClasses() {
+      const tbody = document.getElementById('classes-table');
+      tbody.innerHTML = classes.map(c => `
+        <tr>
+          <td>${c.name}</td>
+          <td>${c.instructor}</td>
+          <td>${c.day}</td>
+          <td>${c.time}</td>
+          <td>${c.duration} دقيقة</td>
+          <td>${c.capacity}</td>
+          <td class="action-btns">
+            <button class="btn-delete" onclick="deleteClass(${c.id})">🗑️ حذف</button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="7" class="empty-state">لا توجد بيانات</td></tr>';
+    }
+
+    // Load Clients
+    function loadClients() {
+      const tbody = document.getElementById('clients-table');
+      tbody.innerHTML = members.map((m, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${m.name}</td>
+          <td>${m.age || '-'}</td>
+          <td>${m.email}</td>
+          <td>${m.phone || '-'}</td>
+          <td>${m.membership}</td>
+          <td><span class="status-badge status-${m.status}">${m.status === 'active' ? 'نشط' : 'غير نشط'}</span></td>
+          <td class="action-btns">
+            <button class="btn-edit" onclick="editMember(${m.id})">✏️ تعديل</button>
+            <button class="btn-delete" onclick="deleteMember(${m.id})">🗑️ حذف</button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="8" class="empty-state">لا توجد بيانات</td></tr>';
+    }
+
+    // Load Subscriptions
+    function loadSubscriptions() {
+      const subscriptions = JSON.parse(localStorage.getItem('gym_subscriptions')) || [];
+      const pendingCount = subscriptions.filter(s => s.status === 'pending').length;
+      
+      document.getElementById('pending-subscriptions-count').textContent = pendingCount + ' طلب';
+      
+      const subscriptionsList = document.getElementById('subscriptions-list');
+      
+      if (subscriptions.length === 0) {
+        subscriptionsList.innerHTML = '<div class="empty-state">لا توجد طلبات اشتراك</div>';
+        return;
+      }
+      
+      subscriptionsList.innerHTML = subscriptions.map(sub => {
+        const genderText = sub.gender === 'male' ? '👨' : '👩';
+        const packageText = sub.package === '1month' ? 'شهر واحد - 150 MAD' : 
+                          sub.package === '3months' ? 'ثلاثة أشهر - 350 MAD' : 
+                          'ستة أشهر - 600 MAD';
+        
+        const photoHtml = sub.photo 
+          ? `<img src="${sub.photo}" alt="Photo">`
+          : `<div class="placeholder">${genderText}</div>`;
+        
+        return `
+        <div class="subscription-item ${sub.status === 'pending' ? 'unread' : ''}">
+          <div class="subscription-header">
+            <div class="subscription-info">
+              <div class="subscription-photo">${photoHtml}</div>
+              <div>
+                <div class="subscription-name">${sub.name || 'بدون اسم'} - ${sub.age || '-'} سنة</div>
+                <div class="subscription-contact">${sub.email} | ${sub.phone}</div>
+              </div>
+            </div>
+            <div style="text-align: left;">
+              <span class="status-badge status-${sub.status}">${sub.status === 'pending' ? 'بانتظار الموافقة' : sub.status === 'approved' ? 'تم الموافقة' : 'مرفوض'}</span>
+              <div class="subscription-date">${new Date(sub.date).toLocaleDateString('ar')}</div>
+            </div>
+          </div>
+          <div class="subscription-details">
+            <strong>الباقة المطلوبة:</strong> ${packageText}
+          </div>
+          <div class="subscription-actions">
+            ${sub.status === 'pending' ? `
+              <button class="btn-approve" onclick="approveSubscription(${sub.id})">✅ موافقة وإضافة للاشتراكات</button>
+              <button class="btn-delete" onclick="rejectSubscription(${sub.id})">❌ رفض</button>
+            ` : ''}
+            <button class="btn-delete" onclick="deleteSubscription(${sub.id})">🗑️ حذف</button>
+          </div>
+        </div>
+      `}).join('');
+    }
+
+    // Approve Subscription - Add gender
+    function approveSubscription(id) {
+      let subscriptions = JSON.parse(localStorage.getItem('gym_subscriptions')) || [];
+      const subIndex = subscriptions.findIndex(s => s.id === id);
+      
+      if (subIndex !== -1) {
+        const sub = subscriptions[subIndex];
+        subscriptions[subIndex].status = 'approved';
+        localStorage.setItem('gym_subscriptions', JSON.stringify(subscriptions));
+        
+        // Add to members with photo and gender
+        const packageText = sub.package === '1month' ? 'شهر واحد - 150 MAD' : 
+                          sub.package === '3months' ? 'ثلاثة أشهر - 350 MAD' : 
+                          'ستة أشهر - 600 MAD';
+        
+        members.push({
+          id: Date.now(),
+          name: sub.name || 'عضو جديد',
+          age: sub.age || '',
+          email: sub.email,
+          phone: sub.phone,
+          membership: packageText,
+          status: 'active',
+          joinDate: new Date().toISOString().split('T')[0],
+          photo: sub.photo,
+          gender: sub.gender || 'male'
+        });
+        saveData();
+        
+        alert('✅ تم الموافقة على الاشتراك وإضافة العضو للاشتراكات!');
+        loadSubscriptions();
+        loadDashboard();
+        loadMembers();
+        loadStats();
+      }
+    }
+
+    // Reject Subscription
+    function rejectSubscription(id) {
+      if (confirm('هل أنت متأكد من رفض هذا الطلب؟')) {
+        let subscriptions = JSON.parse(localStorage.getItem('gym_subscriptions')) || [];
+        const subIndex = subscriptions.findIndex(s => s.id === id);
+        
+        if (subIndex !== -1) {
+          subscriptions[subIndex].status = 'rejected';
+          localStorage.setItem('gym_subscriptions', JSON.stringify(subscriptions));
+          loadSubscriptions();
+        }
+      }
+    }
+
+    // Delete Subscription
+    function deleteSubscription(id) {
+      if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
+        let subscriptions = JSON.parse(localStorage.getItem('gym_subscriptions')) || [];
+        subscriptions = subscriptions.filter(s => s.id !== id);
+        localStorage.setItem('gym_subscriptions', JSON.stringify(subscriptions));
+        loadSubscriptions();
+      }
+    }
+
+    // Load Messages
+    function loadMessages() {
+      const messages = JSON.parse(localStorage.getItem('gym_messages')) || [];
+      const unreadCount = messages.filter(m => m.status === 'unread').length;
+      
+      document.getElementById('unread-count').textContent = unreadCount + ' غير مقروء';
+      
+      const messagesList = document.getElementById('messages-list');
+      
+      if (messages.length === 0) {
+        messagesList.innerHTML = '<div class="empty-state">لا توجد رسائل</div>';
+        return;
+      }
+      
+      messagesList.innerHTML = messages.map(msg => `
+        <div class="message-item ${msg.status === 'unread' ? 'unread' : ''}">
+          <div class="subscription-header">
+            <div>
+              <div class="subscription-name">${msg.name}</div>
+              <div class="subscription-contact">${msg.email} | ${msg.phone || 'بدون هاتف'}</div>
+            </div>
+            <div style="text-align: left;">
+              <span class="status-badge ${msg.status === 'replied' ? 'status-replied' : (msg.status === 'unread' ? 'status-inactive' : 'status-active')}">${msg.status === 'replied' ? 'تم الرد' : (msg.status === 'unread' ? 'غير مقروء' : 'مقروء')}</span>
+              <div class="subscription-date">${new Date(msg.date).toLocaleDateString('ar')}</div>
+            </div>
+          </div>
+          <div class="subscription-details">${msg.message}</div>
+          ${msg.reply ? `
+            <div class="reply-section">
+              <div class="reply-label">📩 ردك:</div>
+              <div class="reply-content">
+                <div class="reply-text">${msg.reply}</div>
+              </div>
+            </div>
+          ` : ''}
+          <div class="subscription-actions">
+            ${!msg.reply ? `<button class="btn-reply" onclick="openReplyModal(${msg.id}, '${msg.name}', '${msg.email}')">📩 رد على الرسالة</button>` : ''}
+            <button class="btn-delete" onclick="deleteMessage(${msg.id})">🗑️ حذف</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Open reply modal
+    function openReplyModal(id, name, email) {
+      document.getElementById('reply-msg-id').value = id;
+      document.getElementById('reply-to').value = email;
+      document.getElementById('reply-subject').value = 'رد على رسالتك - Al-Daoudi Club';
+      document.getElementById('reply-message').value = '';
+      document.getElementById('modal-reply').classList.add('show');
+    }
+
+    // Send reply
+    function sendReply(e) {
+      e.preventDefault();
+      const id = parseInt(document.getElementById('reply-msg-id').value);
+      const reply = document.getElementById('reply-message').value;
+      
+      let messages = JSON.parse(localStorage.getItem('gym_messages')) || [];
+      const msgIndex = messages.findIndex(m => m.id === id);
+      
+      if (msgIndex !== -1) {
+        messages[msgIndex].status = 'replied';
+        messages[msgIndex].reply = reply;
+        messages[msgIndex].replyDate = new Date().toISOString();
+        localStorage.setItem('gym_messages', JSON.stringify(messages));
+        
+        closeModal('reply');
+        loadMessages();
+        
+        alert('✅ تم إرسال الرد بنجاح!');
+      }
+    }
+
+    // Delete message
+    function deleteMessage(id) {
+      if (confirm('هل أنت متأكد من حذف هذه الرسالة؟')) {
+        let messages = JSON.parse(localStorage.getItem('gym_messages')) || [];
+        messages = messages.filter(m => m.id !== id);
+        localStorage.setItem('gym_messages', JSON.stringify(messages));
+        loadMessages();
+      }
+    }
+
+    // Modal Functions
+    function openModal(type) {
+      document.getElementById('modal-' + type).classList.add('show');
+    }
+    
+    function closeModal(type) {
+      document.getElementById('modal-' + type).classList.remove('show');
+      const form = document.getElementById('form-' + type);
+      if (form) form.reset();
+    }
+
+    // Save Member
+    function saveMember(e) {
+      e.preventDefault();
+      const password = document.getElementById('member-password').value;
+      const newMember = {
+        id: Date.now(),
+        name: document.getElementById('member-name').value,
+        age: document.getElementById('member-age').value,
+        email: document.getElementById('member-email').value,
+        phone: document.getElementById('member-phone').value,
+        membership: document.getElementById('member-membership').value,
+        status: document.getElementById('member-status').value,
+        joinDate: new Date().toISOString().split('T')[0],
+        photo: null,
+        password: password
+      };
+      members.push(newMember);
+      saveData();
+      closeModal('member');
+      loadMembers();
+      loadDashboard();
+    }
+
+    // Edit Member
+    function editMember(id) {
+      const member = members.find(m => m.id === id);
+      if (member) {
+        document.getElementById('member-name').value = member.name;
+        document.getElementById('member-age').value = member.age;
+        document.getElementById('member-email').value = member.email;
+        document.getElementById('member-phone').value = member.phone;
+        document.getElementById('member-membership').value = member.membership;
+        document.getElementById('member-status').value = member.status;
+        document.getElementById('member-password').value = member.password || '';
+        openModal('member');
+        members = members.filter(m => m.id !== id);
+      }
+    }
+
+    // Delete Member
+    function deleteMember(id) {
+      if (confirm('هل أنت متأكد من حذف هذا العضو؟')) {
+        members = members.filter(m => m.id !== id);
+        saveData();
+        loadMembers();
+        loadDashboard();
+      }
+    }
+
+    // Save Class
+    function saveClass(e) {
+      e.preventDefault();
+      const newClass = {
+        id: Date.now(),
+        name: document.getElementById('class-name').value,
+        instructor: document.getElementById('class-instructor').value,
+        day: document.getElementById('class-day').value,
+        time: document.getElementById('class-time').value,
+        duration: document.getElementById('class-duration').value,
+        capacity: document.getElementById('class-capacity').value
+      };
+      classes.push(newClass);
+      saveData();
+      closeModal('class');
+      loadClasses();
+      loadDashboard();
+    }
+
+    // Delete Class
+    function deleteClass(id) {
+      if (confirm('هل أنت متأكد من حذف هذه الحصة؟')) {
+        classes = classes.filter(c => c.id !== id);
+        saveData();
+        loadClasses();
+        loadDashboard();
+      }
+    }
+
+    // Save Membership
+    function saveMembership(e) {
+      e.preventDefault();
+      const newMembership = {
+        id: Date.now(),
+        name: document.getElementById('membership-name').value,
+        price: document.getElementById('membership-price').value,
+        duration: document.getElementById('membership-duration').value,
+        features: document.getElementById('membership-features').value
+      };
+      memberships.push(newMembership);
+      saveData();
+      closeModal('membership');
+      loadMemberships();
+    }
+
+    // Delete Membership
+    function deleteMembership(id) {
+      if (confirm('هل أنت متأكد من حذف خطة الاشتراك؟')) {
+        memberships = memberships.filter(m => m.id !== id);
+        saveData();
+        loadMemberships();
+      }
+    }
+
+    // Logout
+    function logout() {
+      // Call server API to destroy session
+      fetch('/api/admin/logout', { method: 'POST' })
+        .then(() => {
+          localStorage.removeItem('gym_admin_logged');
+          localStorage.removeItem('gym_admin_user');
+          window.location.href = 'login.html';
+        })
+        .catch(() => {
+          localStorage.removeItem('gym_admin_logged');
+          localStorage.removeItem('gym_admin_user');
+          window.location.href = 'login.html';
+        });
+    }
+
+    // Scroll Functions for navigation (up/down)
+    function scrollUp() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function scrollDown() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    // Initialize
+    loadDashboard();
+  </script>
+</body>
+</html>
+ 

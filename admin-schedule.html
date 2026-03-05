@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة الاشتراكات - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin-styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); min-height: 100vh; }
+    
+    .admin-container { display: flex; min-height: 100vh; }
+    
+    .sidebar { width: 280px; background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%); padding: 2rem 1rem; color: white; box-shadow: 4px 0 20px rgba(0,0,0,0.3); }
+    .logo { text-align: center; font-size: 1.8rem; font-weight: bold; margin-bottom: 2rem; background: linear-gradient(135deg, #FF6B35, #ff8f5a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .menu { list-style: none; }
+    .menu li { margin-bottom: 0.5rem; }
+    .menu a { display: flex; align-items: center; gap: 1rem; padding: 1rem; color: #aaa; text-decoration: none; border-radius: 12px; transition: all 0.3s; }
+    .menu a:hover, .menu a.active { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+    
+    .main { flex: 1; padding: 2rem; overflow-y: auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .header h1 { color: white; font-size: 1.8rem; }
+    .logout-btn { background: linear-gradient(135deg, #F44336, #E57373); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; font-weight: 600; }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 1.8rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 1.5rem; transition: all 0.3s; }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .stat-icon { width: 65px; height: 65px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+    .stat-icon.orange { background: linear-gradient(135deg, #FF6B35, #ff8f5a); }
+    .stat-icon.green { background: linear-gradient(135deg, #4CAF50, #81C784); }
+    .stat-icon.blue { background: linear-gradient(135deg, #2196F3, #64B5F6); }
+    .stat-icon.purple { background: linear-gradient(135deg, #9C27B0, #BA68C8); }
+    .stat-icon.teal { background: linear-gradient(135deg, #00BCD4, #26C6DA); }
+    .stat-icon.amber { background: linear-gradient(135deg, #FFC107, #FFD54F); }
+    .stat-info h3 { color: white; font-size: 2rem; margin-bottom: 0.3rem; }
+    .stat-info p { color: rgba(255,255,255,0.6); font-size: 0.9rem; text-transform: uppercase; }
+    
+    .card { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2rem; overflow: hidden; }
+    .card-header { padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .card-header h3 { color: white; }
+    .add-btn { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+    
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 1rem 1.5rem; text-align: right; }
+    th { background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.7); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+    td { color: rgba(255,255,255,0.85); border-bottom: 1px solid rgba(255,255,255,0.03); }
+    tr:hover td { background: rgba(255,107,53,0.05); }
+    
+    .membership-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 20px; padding: 2rem; margin: 1rem; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s; }
+    .membership-card:hover { transform: translateY(-5px); border-color: rgba(255,107,53,0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .membership-header { text-align: center; margin-bottom: 1.5rem; }
+    .membership-header h3 { color: white; font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .membership-price { font-size: 2.5rem; font-weight: bold; background: linear-gradient(135deg, #FF6B35, #ff8f5a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .membership-price span { font-size: 1rem; color: rgba(255,255,255,0.5); }
+    .membership-duration { color: rgba(255,255,255,0.6); margin-bottom: 1rem; }
+    .membership-features { list-style: none; margin-bottom: 1.5rem; }
+    .membership-features li { padding: 0.5rem 0; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 0.5rem; }
+    .membership-features li::before { content: '✓'; color: #4CAF50; font-weight: bold; }
+    .membership-actions { display: flex; gap: 0.5rem; }
+    
+    .grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+    .list-view { display: block; }
+    .list-view .membership-card { margin: 0; border-radius: 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; }
+    .list-view .membership-header { margin-bottom: 0; text-align: right; display: flex; align-items: center; gap: 1rem; }
+    .list-view .membership-header h3 { margin-bottom: 0; }
+    .list-view .membership-features { display: none; }
+    .list-view .membership-actions { margin-right: auto; }
+    
+    .view-toggle { display: flex; gap: 0.5rem; }
+    .view-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; }
+    .view-btn.active { background: #FF6B35; border-color: #FF6B35; }
+    
+    .status-badge { padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+    .status-active { background: linear-gradient(135deg, rgba(76,175,80,0.2), rgba(76,175,80,0.1)); color: #4CAF50; border: 1px solid rgba(76,175,80,0.3); }
+    .status-inactive { background: linear-gradient(135deg, rgba(244,67,54,0.2), rgba(244,67,54,0.1)); color: #F44336; border: 1px solid rgba(244,67,54,0.3); }
+    
+    .action-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn-edit, .btn-delete, .btn-view { padding: 0.5rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+    .btn-edit { background: linear-gradient(135deg, #2196F3, #64B5F6); color: white; }
+    .btn-delete { background: linear-gradient(135deg, #F44336, #EF5350); color: white; }
+    
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+    .modal.show { display: flex; }
+    .modal-content { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 2rem; border-radius: 24px; width: 100%; max-width: 500px; border: 1px solid rgba(255,255,255,0.1); max-height: 90vh; overflow-y: auto; }
+    .modal h2 { color: white; margin-bottom: 1.5rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 1rem; border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; background: rgba(0,0,0,0.3); color: white; font-size: 1rem; font-family: inherit; }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #FF6B35; }
+    .modal-btns { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    .modal-btns button { flex: 1; padding: 1rem; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 1rem; }
+    .btn-save { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+    .btn-cancel { background: rgba(255,255,255,0.1); color: white; }
+    
+    .empty-state { text-align: center; padding: 3rem; color: rgba(255,255,255,0.5); }
+    .search-box { margin-bottom: 1.5rem; }
+    .search-box input { width: 100%; max-width: 400px; padding: 1rem 1.5rem; border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; background: rgba(0,0,0,0.3); color: white; font-size: 1rem; }
+    .search-box input:focus { outline: none; border-color: #FF6B35; }
+    .search-box input::placeholder { color: rgba(255,255,255,0.4); }
+    
+    .filter-buttons { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .filter-btn { padding: 0.6rem 1.2rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.3s; }
+    .filter-btn.active, .filter-btn:hover { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; border-color: transparent; }
+    
+    .alert { padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; display: none; }
+    .alert.show { display: block; }
+    .alert.success { background: linear-gradient(135deg, rgba(76,175,80,0.2), rgba(76,175,80,0.1)); color: #4CAF50; border: 1px solid rgba(76,175,80,0.3); }
+    .alert.error { background: linear-gradient(135deg, rgba(244,67,54,0.2), rgba(244,67,54,0.1)); color: #F44336; border: 1px solid rgba(244,67,54,0.3); }
+    
+    @media (max-width: 768px) {
+      .admin-container { flex-direction: column; }
+      .sidebar { width: 100%; padding: 1rem; }
+      .menu { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .grid-view { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <aside class="sidebar">
+      <div class="logo">Al-Daoudi Club</div>
+      <ul class="menu">
+        <li><a href="admin.html">📊 لوحة التحكم</a></li>
+        <li><a href="admin-members.html">👥 الأعضاء</a></li>
+        <li><a href="admin-classes.html">🏋️ الحصص</a></li>
+        <li><a href="admin-bookings.html">📅 الحجوزات</a></li>
+        <li><a href="#" class="active">💳 الاشتراكات</a></li>
+        <li><a href="admin-assistants.html">👨‍🏫 المساعدين</a></li>
+        <li><a href="messages.html">📩 الرسائل</a></li>
+        <li><a href="index.html">🏠 الموقع</a></li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <div class="header">
+        <h1>💳 إدارة الاشتراكات والباقات</h1>
+        <button class="logout-btn" onclick="logout()">🚪 تسجيل خروج</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon orange">💳</div>
+          <div class="stat-info">
+            <h3 id="total-plans">0</h3>
+            <p>إجمالي الباقات</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">✅</div>
+          <div class="stat-info">
+            <h3 id="active-plans">0</h3>
+            <p>باقات نشطة</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">👥</div>
+          <div class="stat-info">
+            <h3 id="total-subscribers">0</h3>
+            <p>إجمالي المشتركين</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple">💰</div>
+          <div class="stat-info">
+            <h3 id="total-revenue">0</h3>
+            <p>إجمالي الإيرادات</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="🔍 البحث عن باقة..." onkeyup="filterMemberships()">
+      </div>
+      
+      <div class="filter-buttons">
+        <button class="filter-btn active" onclick="filterByDuration('all')">الكل</button>
+        <button class="filter-btn" onclick="filterByDuration('شهر واحد')">شهر</button>
+        <button class="filter-btn" onclick="filterByDuration('ثلاثة أشهر')">3 أشهر</button>
+        <button class="filter-btn" onclick="filterByDuration('ستة أشهر')">6 أشهر</button>
+        <button class="filter-btn" onclick="filterByDuration('سنة')">سنة</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>💳 خطط الاشتراك المتاحة</h3>
+          <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <div class="view-toggle">
+              <button class="view-btn active" onclick="setView('grid')">⬡ شبكه</button>
+              <button class="view-btn" onclick="setView('list')">☰ قائمه</button>
+            </div>
+            <button class="add-btn" onclick="openModal()">➕ إضافة باقة جديدة</button>
+          </div>
+        </div>
+        <div id="memberships-list" class="grid-view"></div>
+      </div>
+    </main>
+  </div>
+
+  <div id="modal-membership" class="modal">
+    <div class="modal-content">
+      <h2 id="modal-title">➕ إضافة باقة جديدة</h2>
+      <form id="form-membership" onsubmit="saveMembership(event)">
+        <input type="hidden" id="membership-id">
+        
+        <div class="form-group">
+          <label>اسم الباقة</label>
+          <input type="text" id="membership-name" required placeholder="مثال: باقة ذهبية VIP">
+        </div>
+        
+        <div class="form-group">
+          <label>السعر (درهم)</label>
+          <input type="number" id="membership-price" step="1" required placeholder="مثال: 150">
+        </div>
+        
+        <div class="form-group">
+          <label>المدة</label>
+          <select id="membership-duration" required>
+            <option value="شهر واحد">شهر واحد</option>
+            <option value="ثلاثة أشهر">ثلاثة أشهر</option>
+            <option value="ستة أشهر">ستة أشهر</option>
+            <option value="سنة">سنة كاملة</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>الوصف</label>
+          <input type="text" id="membership-description" placeholder="مثال: أفضل قيمة">
+        </div>
+        
+        <div class="form-group">
+          <label>المميزات (افصل بينها بفواصل)</label>
+          <textarea id="membership-features" placeholder="مثال: وصول للمعدات, مدرب شخصي, حصص جماعية"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>الحالة</label>
+          <select id="membership-status">
+            <option value="active">نشط</option>
+            <option value="inactive">غير نشط</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>الون التمييز (اختياري)</label>
+          <select id="membership-color">
+            <option value="orange">برتقالي</option>
+            <option value="green">أخضر</option>
+            <option value="blue">أزرق</option>
+            <option value="purple">بنفسجي</option>
+            <option value="gold">ذهبي</option>
+          </select>
+        </div>
+        
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" onclick="closeModal()">إلغاء</button>
+          <button type="submit" class="btn-save">💾 حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    if (localStorage.getItem('gym_admin_logged') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    let memberships = JSON.parse(localStorage.getItem('gym_memberships')) || [
+      { id: 1, name: 'باقة أساسية', price: 150, duration: 'شهر واحد', description: 'للاشتراك الشهري', features: 'وصول للمعدات, غرفة خزانة', status: 'active', color: 'orange' },
+      { id: 2, name: 'باقة ثلاثية', price: 350, duration: 'ثلاثة أشهر', description: 'خصم 22%', features: 'وصول كامل, حصص جماعية, مدرب شخصي', status: 'active', color: 'green' },
+      { id: 3, name: 'باقة ذهبية', price: 600, duration: 'ستة أشهر', description: 'أفضل قيمة', features: 'وصول كامل, مدرب شخصي, سونا, حمام بخار', status: 'active', color: 'gold' },
+      { id: 4, name: 'باقة VIP', price: 1000, duration: 'سنة', description: 'مميزة', features: 'وصول كامل مدى الحياة, مدرب شخصي, جميع الخدمات', status: 'active', color: 'purple' }
+    ];
+    
+    let members = JSON.parse(localStorage.getItem('gym_members')) || [];
+    let subscriptions = JSON.parse(localStorage.getItem('gym_subscriptions')) || [];
+    
+    let currentView = 'grid';
+
+    function saveData() {
+      localStorage.setItem('gym_memberships', JSON.stringify(memberships));
+    }
+
+    function loadMemberships() {
+      const container = document.getElementById('memberships-list');
+      
+      // Calculate stats
+      const activePlans = memberships.filter(m => m.status === 'active').length;
+      const totalSubscribers = members.length + subscriptions.filter(s => s.status === 'approved').length;
+      
+      let totalRevenue = 0;
+      members.forEach(m => {
+        if (m.membership && m.membership.includes('150')) totalRevenue += 150;
+        else if (m.membership && m.membership.includes('350')) totalRevenue += 350;
+        else if (m.membership && m.membership.includes('600')) totalRevenue += 600;
+        else if (m.membership && m.membership.includes('1000')) totalRevenue += 1000;
+      });
+      
+      document.getElementById('total-plans').textContent = memberships.length;
+      document.getElementById('active-plans').textContent = activePlans;
+      document.getElementById('total-subscribers').textContent = totalSubscribers;
+      document.getElementById('total-revenue').textContent = totalRevenue + ' MAD';
+      
+      if (memberships.length === 0) {
+        container.innerHTML = '<div class="empty-state">لا توجد باقات اشتراك حتى الآن</div>';
+        return;
+      }
+      
+      renderMemberships(memberships);
+    }
+
+    function renderMemberships(data) {
+      const container = document.getElementById('memberships-list');
+      container.className = currentView === 'grid' ? 'grid-view' : 'list-view';
+      
+      container.innerHTML = data.map(plan => {
+        const colorClass = plan.color || 'orange';
+        const statusBadge = plan.status === 'active' 
+          ? '<span class="status-badge status-active">نشط</span>' 
+          : '<span class="status-badge status-inactive">غير نشط</span>';
+        
+        const featuresList = plan.features ? plan.features.split(',').map(f => `<li>${f.trim()}</li>`).join('') : '';
+        
+        return `
+        <div class="membership-card">
+          <div class="membership-header">
+            <h3>${plan.name}</h3>
+            ${statusBadge}
+          </div>
+          <div class="membership-price">${plan.price} <span>MAD</span></div>
+          <div class="membership-duration">${plan.duration} ${plan.description ? '- ' + plan.description : ''}</div>
+          <ul class="membership-features">${featuresList}</ul>
+          <div class="membership-actions">
+            <button class="btn-edit" onclick="editMembership(${plan.id})">✏️ تعديل</button>
+            <button class="btn-delete" onclick="deleteMembership(${plan.id})">🗑️ حذف</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function setView(view) {
+      currentView = view;
+      document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderMemberships(memberships);
+    }
+
+    function filterMemberships() {
+      const search = document.getElementById('search-input').value.toLowerCase();
+      const filtered = memberships.filter(m => 
+        m.name.toLowerCase().includes(search) || 
+        m.duration.toLowerCase().includes(search) ||
+        String(m.price).includes(search)
+      );
+      renderMemberships(filtered);
+    }
+
+    function filterByDuration(duration) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      if (duration === 'all') {
+        renderMemberships(memberships);
+      } else {
+        const filtered = memberships.filter(m => m.duration === duration);
+        renderMemberships(filtered);
+      }
+    }
+
+    function openModal(plan = null) {
+      if (plan) {
+        document.getElementById('modal-title').textContent = '✏️ تعديل الباقة';
+        document.getElementById('membership-id').value = plan.id;
+        document.getElementById('membership-name').value = plan.name;
+        document.getElementById('membership-price').value = plan.price;
+        document.getElementById('membership-duration').value = plan.duration;
+        document.getElementById('membership-description').value = plan.description || '';
+        document.getElementById('membership-features').value = plan.features || '';
+        document.getElementById('membership-status').value = plan.status;
+        document.getElementById('membership-color').value = plan.color || 'orange';
+      } else {
+        document.getElementById('modal-title').textContent = '➕ إضافة باقة جديدة';
+        document.getElementById('form-membership').reset();
+        document.getElementById('membership-id').value = '';
+      }
+      document.getElementById('modal-membership').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-membership').classList.remove('show');
+    }
+
+    function saveMembership(e) {
+      e.preventDefault();
+      
+      const id = document.getElementById('membership-id').value;
+      const membership = {
+        id: id ? parseInt(id) : Date.now(),
+        name: document.getElementById('membership-name').value,
+        price: parseInt(document.getElementById('membership-price').value),
+        duration: document.getElementById('membership-duration').value,
+        description: document.getElementById('membership-description').value,
+        features: document.getElementById('membership-features').value,
+        status: document.getElementById('membership-status').value,
+        color: document.getElementById('membership-color').value
+      };
+      
+      if (id) {
+        const index = memberships.findIndex(m => m.id === parseInt(id));
+        if (index !== -1) memberships[index] = membership;
+      } else {
+        memberships.push(membership);
+      }
+      
+      saveData();
+      closeModal();
+      loadMemberships();
+      showAlert('✅ تم حفظ الباقة بنجاح!', 'success');
+    }
+
+    function editMembership(id) {
+      const plan = memberships.find(m => m.id === id);
+      if (plan) openModal(plan);
+    }
+
+    function deleteMembership(id) {
+      if (confirm('هل أنت متأكد من حذف هذه الباقة؟')) {
+        memberships = memberships.filter(m => m.id !== id);
+        saveData();
+        loadMemberships();
+        showAlert('✅ تم حذف الباقة بنجاح!', 'success');
+      }
+    }
+
+    function showAlert(message, type) {
+      const alert = document.createElement('div');
+      alert.className = `alert show ${type}`;
+      alert.textContent = message;
+      document.querySelector('.main').insertBefore(alert, document.querySelector('.stats-grid'));
+      setTimeout(() => alert.remove(), 3000);
+    }
+
+    function logout() {
+      localStorage.removeItem('gym_admin_logged');
+      localStorage.removeItem('gym_admin_user');
+      window.location.href = 'login.html';
+    }
+
+    loadMemberships();
+  </script>
+</body>
+</html>
+

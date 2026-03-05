@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الاشتراكات - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles-additions.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    .subscription-section {
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+      min-height: 100vh;
+    }
+    
+    .subscription-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 24px;
+      padding: 2.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .subscription-title {
+      text-align: center;
+      color: white;
+      margin-bottom: 2rem;
+    }
+    
+    .subscription-title h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subscription-title p {
+      color: rgba(255,255,255,0.6);
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      font-size: 1rem;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #FF6B35;
+    }
+    
+    /* Photo Upload Styles */
+    .photo-upload-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .photo-preview {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid #FF6B35;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .photo-preview:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255,107,53,0.3);
+    }
+    
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .photo-preview .placeholder {
+      color: rgba(255,255,255,0.5);
+      font-size: 2rem;
+    }
+    
+    .photo-input {
+      display: none;
+    }
+    
+    .photo-label {
+      color: #FF6B35;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    
+    .gender-options {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .gender-option {
+      flex: 1;
+      padding: 1rem;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .gender-option.selected {
+      border-color: #FF6B35;
+      background: rgba(255,107,53,0.1);
+      color: #FF6B35;
+    }
+    
+    .package-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .package-option {
+      padding: 1.5rem;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      background: rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .package-option:hover {
+      border-color: rgba(255,255,255,0.3);
+    }
+    
+    .package-option.selected {
+      border-color: #FF6B35;
+      background: rgba(255,107,53,0.1);
+    }
+    
+    .package-info h4 {
+      color: white;
+      margin-bottom: 0.3rem;
+    }
+    
+    .package-info p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.9rem;
+    }
+    
+    .package-price {
+      text-align: left;
+    }
+    
+    .package-price .price {
+      color: #FF6B35;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .package-price .duration {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+    }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255,107,53,0.3);
+    }
+    
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .success-message.show {
+      display: block;
+    }
+    
+    .success-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    
+    .success-message h3 {
+      color: #4CAF50;
+      margin-bottom: 0.5rem;
+    }
+    
+    .success-message p {
+      color: rgba(255,255,255,0.7);
+    }
+    
+    .navbar {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .logo span {
+      color: #FF6B35;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    
+    .nav-links a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: #FF6B35;
+    }
+    
+    /* Hamburger Menu */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+      padding: 0.5rem;
+    }
+    
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: white;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+    
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -6px);
+    }
+    
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+      
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: linear-gradient(180deg, rgba(26, 26, 46, 0.98), rgba(22, 33, 62, 0.98));
+        flex-direction: column;
+        padding: 2rem;
+        gap: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .nav-links.active {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">Al-Daoudi<span>Club</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="services.html">الخدمات</a></li>
+      <li><a href="membership.html">الاشتراكات</a></li>
+      <li><a href="contact.html">اتصل بنا</a></li>
+      <li><a href="messages.html">الرسائل</a></li>
+      <li><a href="admin.html" class="btn-login">لوحة التحكم</a></li>
+    </ul>
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Subscription Section -->
+  <section class="subscription-section">
+    <div class="subscription-container">
+      <div class="subscription-title">
+        <h2>💪 اشترك الآن</h2>
+        <p>اختر الباقة المناسبة لك وانضم لعائلة الداودي</p>
+      </div>
+      
+      <!-- Subscription Form -->
+      <form id="subscription-form">
+        <!-- Photo Upload -->
+        <div class="form-group">
+          <label>الصورة الشخصية</label>
+          <div class="photo-upload-container">
+            <div class="photo-preview" onclick="document.getElementById('photo').click()">
+              <span class="placeholder">📷</span>
+              <img id="photo-preview-img" style="display: none;" src="" alt="Photo">
+            </div>
+            <input type="file" id="photo" class="photo-input" accept="image/*" onchange="previewPhoto(event)">
+            <span class="photo-label" onclick="document.getElementById('photo').click()">اضغط لرفع صورة</span>
+          </div>
+        </div>
+        
+        <!-- Name -->
+        <div class="form-group">
+          <label>الاسم الكامل *</label>
+          <input type="text" id="name" required placeholder="أدخل اسمك الكامل">
+        </div>
+        
+        <!-- Age -->
+        <div class="form-group">
+          <label>العمر *</label>
+          <input type="number" id="age" required placeholder="أدخل عمرك" min="10" max="80">
+        </div>
+        
+        <!-- Gender -->
+        <div class="form-group">
+          <label>الجنس *</label>
+          <div class="gender-options">
+            <div class="gender-option selected" data-value="male" onclick="selectGender('male')">
+              👨 ذكر
+            </div>
+            <div class="gender-option" data-value="female" onclick="selectGender('female')">
+              👩 أنثى
+            </div>
+          </div>
+          <input type="hidden" id="gender" value="male">
+        </div>
+        
+        <!-- Phone -->
+        <div class="form-group">
+          <label>رقم الهاتف *</label>
+          <input type="tel" id="phone" required placeholder="06 xx xxx xxx">
+        </div>
+        
+        <!-- Email -->
+        <div class="form-group">
+          <label>البريد الإلكتروني *</label>
+          <input type="email" id="email" required placeholder="example@email.com">
+        </div>
+        
+        <!-- Package Selection -->
+        <div class="form-group">
+          <label>اختر الباقة *</label>
+          <div class="package-options">
+            <div class="package-option selected" data-package="1month" onclick="selectPackage('1month', 150)">
+              <div class="package-info">
+                <h4>شهر واحد</h4>
+                <p>للاشتراك الشهري</p>
+              </div>
+              <div class="package-price">
+                <div class="price">150 MAD</div>
+                <div class="duration">شهرياً</div>
+              </div>
+            </div>
+            
+            <div class="package-option" data-package="3months" onclick="selectPackage('3months', 350)">
+              <div class="package-info">
+                <h4>ثلاثة أشهر</h4>
+                <p>خصم 22% - أفضل قيمة</p>
+              </div>
+              <div class="package-price">
+                <div class="price">350 MAD</div>
+                <div class="duration">كل 3 أشهر</div>
+              </div>
+            </div>
+            
+            <div class="package-option" data-package="6months" onclick="selectPackage('6months', 600)">
+              <div class="package-info">
+                <h4>ستة أشهر</h4>
+                <p>خصم 33% -أفضل قيمة</p>
+              </div>
+              <div class="package-price">
+                <div class="price">600 MAD</div>
+                <div class="duration">كل 6 أشهر</div>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="package" value="1month">
+          <input type="hidden" id="price" value="150">
+        </div>
+        
+        <button type="submit" class="submit-btn">🚀 اشترك الآن</button>
+      </form>
+      
+      <!-- Success Message -->
+      <div class="success-message" id="success-message">
+        <div class="success-icon">✅</div>
+        <h3>تم إرسال طلب الاشتراك بنجاح!</h3>
+        <p>سيتواصل معك فريق الداودي قريباً</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    let selectedGender = 'male';
+    let selectedPackage = '1month';
+    let selectedPrice = 150;
+    let photoData = null;
+    
+    function selectGender(gender) {
+      selectedGender = gender;
+      document.getElementById('gender').value = gender;
+      
+      document.querySelectorAll('.gender-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      document.querySelector(`[data-value="${gender}"]`).classList.add('selected');
+    }
+    
+    function selectPackage(packageType, price) {
+      selectedPackage = packageType;
+      selectedPrice = price;
+      
+      document.getElementById('package').value = packageType;
+      document.getElementById('price').value = price;
+      
+      document.querySelectorAll('.package-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      document.querySelector(`[data-package="${packageType}"]`).classList.add('selected');
+    }
+    
+    // Photo preview function
+    function previewPhoto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          photoData = e.target.result;
+          const img = document.getElementById('photo-preview-img');
+          const placeholder = document.querySelector('.photo-preview .placeholder');
+          img.src = photoData;
+          img.style.display = 'block';
+          placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    // Handle form submission
+    document.getElementById('subscription-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      const age = document.getElementById('age').value;
+      
+      const subscription = {
+        id: Date.now(),
+        name: name,
+        age: age,
+        gender: selectedGender,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        package: selectedPackage,
+        price: selectedPrice,
+        photo: photoData,
+        date: new Date().toISOString(),
+        status: 'pending'
+      };
+      
+      // Get existing subscriptions
+      let subscriptions = JSON.parse(localStorage.getItem('gym_subscriptions')) || [];
+      subscriptions.push(subscription);
+      localStorage.setItem('gym_subscriptions', JSON.stringify(subscriptions));
+      
+      // Show success message
+      document.getElementById('subscription-form').style.display = 'none';
+      document.getElementById('success-message').classList.add('show');
+    });
+  </script>
+  <script src="js/main.js"></script>
+  <script>
+    // Load dynamic website settings
+    document.addEventListener('DOMContentLoaded', function() {
+      const settings = JSON.parse(localStorage.getItem('gym_site_settings'));
+      
+      if (settings) {
+        // Update logo
+        if (settings.siteName) {
+          document.querySelectorAll('.logo').forEach(el => {
+            const parts = settings.siteName.split(' ');
+            if (parts.length > 1) {
+              el.innerHTML = parts[0] + '<span>' + parts.slice(1).join(' ') + '</span>';
+            } else {
+              el.innerHTML = settings.siteName;
+            }
+          });
+          document.title = 'الاشتراكات - ' + settings.siteName;
+        }
+      }
+    });
+  </script>
+</body>
+</html>

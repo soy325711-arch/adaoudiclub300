@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>خدماتنا - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    /* Additional styles for services page */
+    :root {
+      --primary: #FF6B35;
+      --primary-dark: #e55a2b;
+      --primary-light: #ff8f5a;
+      --secondary: #1A1A2E;
+      --white: #FFFFFF;
+      --light: #EAEAEA;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--secondary) 0%, #16213e 100%);
+      min-height: 100vh;
+    }
+    
+    /* Navigation */
+    .navbar {
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.98), rgba(22, 33, 62, 0.98));
+      backdrop-filter: blur(10px);
+    }
+    
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+    
+    .btn-login {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    }
+    
+    /* Page Header */
+    .page-header {
+      background: linear-gradient(rgba(26, 26, 46, 0.92), rgba(26, 26, 46, 0.85)),
+                  url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920') center/cover;
+      padding: 8rem 2rem 4rem;
+      margin-top: 60px;
+    }
+    
+    .page-header h1 {
+      font-size: 3rem;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+    
+    .page-header p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.2rem;
+    }
+    
+    /* Services Section */
+    .services-section {
+      padding: 4rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .section-header h2 {
+      font-size: 2.5rem;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+    
+    .section-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* Services Grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+    
+    /* Service Card */
+    .service-card {
+      background: linear-gradient(145deg, rgba(30, 30, 55, 0.95), rgba(25, 35, 65, 0.95));
+      border-radius: 24px;
+      padding: 2.5rem;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    }
+    
+    .service-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 107, 53, 0.05), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    
+    .service-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 107, 53, 0.3);
+    }
+    
+    .service-card:hover::after {
+      opacity: 1;
+    }
+    
+    .service-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2.5rem;
+      color: var(--white);
+      box-shadow: 0 15px 35px rgba(255, 107, 53, 0.4);
+      transition: all 0.3s;
+    }
+    
+    .service-card:hover .service-icon {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 20px 45px rgba(255, 107, 53, 0.5);
+    }
+    
+    .service-card h3 {
+      font-size: 1.5rem;
+      color: var(--white);
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    
+    .service-card p {
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+    
+    /* Service Actions */
+    .service-actions {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .service-btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+    }
+    
+    .service-btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: var(--white);
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    }
+    
+    .service-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5);
+    }
+    
+    .service-btn-secondary {
+      background: transparent;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      color: var(--white);
+    }
+    
+    .service-btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    
+    /* CTA Section */
+    .cta-section {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      padding: 4rem 2rem;
+      text-align: center;
+      margin: 4rem 0 0;
+    }
+    
+    .cta-section h2 {
+      color: var(--white);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .cta-section p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .cta-section .btn-white {
+      background: var(--white);
+      color: var(--primary);
+      padding: 1rem 2.5rem;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+    
+    .cta-section .btn-white:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Footer */
+    .footer {
+      background: #0a0a15;
+      padding: 3rem 2rem 1.5rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+    
+    .footer-section h3 {
+      color: var(--primary);
+      margin-bottom: 1.2rem;
+      font-size: 1.2rem;
+    }
+    
+    .footer-section p, .footer-section li {
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 0.6rem;
+    }
+    
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .footer-section a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .footer-section a:hover {
+      color: var(--primary);
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .empty-state .icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    
+    /* Loading State */
+    .loading-services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .skeleton-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      padding: 2.5rem;
+      animation: pulse 1.5s infinite;
+    }
+    
+    .skeleton-icon {
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      margin: 0 auto 1.5rem;
+    }
+    
+    .skeleton-text {
+      height: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      margin-bottom: 0.8rem;
+    }
+    
+    .skeleton-text.short {
+      width: 60%;
+      margin: 0 auto;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 2rem;
+      }
+      
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .service-card {
+        padding: 2rem;
+      }
+      
+      .service-actions {
+        flex-direction: column;
+      }
+      
+      .service-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">Al-Daoudi<span>Club</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="services.html" style="color: var(--primary);">الخدمات</a></li>
+      <li><a href="membership.html">الاشتراكات</a></li>
+      <li><a href="contact.html">اتصل بنا</a></li>
+<li><a href="login-simple.html" class="btn-login">تسجيل دخول</a></li>
+    </ul>
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1>خدماتنا المميزة</h1>
+    <p>نقدم لك أفضل الخدمات الاحترافية لمساعدتك على تحقيق أهدافك fitness</p>
+  </header>
+
+  <!-- Services Section -->
+  <section class="services-section">
+    <div class="section-header">
+      <h2>Explore Our Services</h2>
+      <p>مرافق عالمية المستوى وإرشاد خبير لرحلتك الصحية</p>
+    </div>
+    
+    <div class="services-grid" id="services-grid">
+      <!-- Loading State -->
+      <div class="loading-services" id="loading-services">
+        <div class="skeleton-card">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-text short"></div>
+        <div class="skeleton-card">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-text short"></div>
+        <div class="skeleton-card">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-text short"></div>
+      </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2>هل أنت مستعد للبدء؟</h2>
+    <p>انضم الآن وابدأ رحلتك معنا نحو حياة healthier</p>
+    <a href="membership.html" class="btn-white">شاهد خطط الاشتراك</a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Al-Daoudi Club</h3>
+        <p>غير حياتك، غير مستقبلك.</p>
+        <p>أفضل نادٍ fitness في الدار البيضاء</p>
+      </div>
+      <div class="footer-section">
+        <h3>روابط سريعة</h3>
+        <ul>
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="services.html">الخدمات</a></li>
+          <li><a href="membership.html">الاشتراكات</a></li>
+          <li><a href="contact.html">اتصل بنا</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>معلومات الاتصال</h3>
+        <p>📍 المغرب، الدار البيضاء</p>
+        <p>📞 06 33 37 77 22</p>
+        <p>📧 Clubsportdaoudi2000@gmail.com</p>
+      </div>
+      <div class="footer-section">
+        <h3>ساعات العمل</h3>
+        <p>الاثنين - الجمعة: 6صباحاً - 11مساءً</p>
+        <p>السبت - الأحد: 8صباحاً - 8مساءً</p>
+      </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Al-Daoudi Bodybuilding Club. جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Icon mapping
+    const iconMap = {
+      'person': 'person',
+      'groups': 'groups',
+      'directions_run': 'directions_run',
+      'fitness_center': 'fitness_center',
+      'pool': 'pool',
+      'hot_tub': 'hot_tub',
+      'sports_martial_arts': 'sports_martial_arts',
+      'sports_gymnastics': 'sports_gymnastics',
+      'nutrition': 'restaurant'
+    };
+
+    // Load services
+    async function loadServices() {
+      const grid = document.getElementById('services-grid');
+      const loading = document.getElementById('loading-services');
+      
+      try {
+        // Try localStorage first (admin saved data)
+        let services = JSON.parse(localStorage.getItem('gym_services'));
+        
+        // If no localStorage, try API
+        if (!services || services.length === 0) {
+          try {
+            const response = await fetch('/api/services');
+            services = await response.json();
+          } catch (e) {
+            console.log('API not available, using defaults');
+          }
+        }
+        
+        // Still no services? Use defaults
+        if (!services || services.length === 0) {
+          services = [
+            { id: 1, name: 'كمال الأجسام', description: 'تدرب على أحدث المعدات مع إرشاد مدربين محترفين متخصصين في كمال الأجسام.', icon: 'fitness_center' },
+            { id: 2, name: 'تمارين لياقة', description: 'برامج تمارين مخصصة لتناسب مستوى خبرتك وأهدافك الشخصية.', icon: 'sports_gymnastics' },
+            { id: 3, name: 'الكيك بوكسينغ', description: 'تعلم فنون القتال مع مدربين محترفين. قاعة مجهزة بأحدث المعدات.', icon: 'sports_martial_arts' },
+            { id: 4, name: 'استشارات تغذية', description: 'احصل على خطة تغذية متخصصة من خبراء التغذية الرياضية.', icon: 'nutrition' },
+            { id: 5, name: 'إيروبيك', description: 'تمارين إيروبيك عالية الطاقة لحرق السعرات وتحسين اللياقة القلبية.', icon: 'directions_run' },
+            { id: 6, name: 'تدريب شخصي', description: 'مدرب شخصي متخصص معك في كل جلسة لتحقيق أقصى resultados.', icon: 'person' }
+          ];
+        }
+        
+        // Hide loading
+        loading.style.display = 'none';
+        
+        // Render services
+        grid.innerHTML = services.map((service, index) => `
+          <div class="service-card" style="animation-delay: ${index * 0.1}s">
+            <div class="service-icon">
+              <span class="material-icons">${iconMap[service.icon] || 'fitness_center'}</span>
+            </div>
+            <h3>${service.name}</h3>
+            <p>${service.description}</p>
+            <div class="service-actions">
+              <a href="contact.html" class="service-btn service-btn-primary">
+                <span class="material-icons" style="font-size: 1.2rem;">calendar_today</span>
+                احجز الآن
+              </a>
+              <a href="membership.html" class="service-btn service-btn-secondary">
+                <span class="material-icons" style="font-size: 1.2rem;">card_membership</span>
+                الاشتراكات
+              </a>
+            </div>
+        `).join('');
+        
+      } catch (error) {
+        console.error('Error loading services:', error);
+        loading.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>حدث خطأ في تحميل الخدمات</p></div>';
+      }
+    }
+
+    // Mobile menu toggle
+    function toggleMenu() {
+      const navLinks = document.querySelector('.nav-links');
+      const hamburger = document.querySelector('.hamburger');
+      navLinks.classList.toggle('active');
+      hamburger.classList.toggle('active');
+    }
+
+    // Load site settings
+    function loadSiteSettings() {
+      const settings = JSON.parse(localStorage.getItem('gym_site_settings'));
+      if (!settings) return;
+      
+      if (settings.siteName) {
+        document.title = 'الخدمات - ' + settings.siteName;
+        document.querySelectorAll('.logo').forEach(el => {
+          const parts = settings.siteName.split(' ');
+          if (parts.length > 1) {
+            el.innerHTML = parts[0] + '<span>' + parts.slice(1).join(' ') + '</span>';
+          }
+        });
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      loadSiteSettings();
+      loadServices();
+    });
+  </script>
+</body>
+</html>

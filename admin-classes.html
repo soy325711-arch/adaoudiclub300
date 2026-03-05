@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة المساعدين - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin-styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); min-height: 100vh; }
+    
+    .admin-container { display: flex; min-height: 100vh; }
+    
+    .sidebar { width: 280px; background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%); padding: 2rem 1rem; color: white; box-shadow: 4px 0 20px rgba(0,0,0,0.3); }
+    .logo { text-align: center; font-size: 1.8rem; font-weight: bold; margin-bottom: 2rem; background: linear-gradient(135deg, #FF6B35, #ff8f5a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .menu { list-style: none; }
+    .menu li { margin-bottom: 0.5rem; }
+    .menu a { display: flex; align-items: center; gap: 1rem; padding: 1rem; color: #aaa; text-decoration: none; border-radius: 12px; transition: all 0.3s; }
+    .menu a:hover, .menu a.active { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+    
+    .main { flex: 1; padding: 2rem; overflow-y: auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .header h1 { color: white; font-size: 1.8rem; }
+    .logout-btn { background: linear-gradient(135deg, #F44336, #E57373); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; font-weight: 600; }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 1.8rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 1.5rem; transition: all 0.3s; }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .stat-icon { width: 65px; height: 65px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+    .stat-icon.purple { background: linear-gradient(135deg, #9C27B0, #BA68C8); }
+    .stat-icon.green { background: linear-gradient(135deg, #4CAF50, #81C784); }
+    .stat-icon.blue { background: linear-gradient(135deg, #2196F3, #64B5F6); }
+    .stat-icon.amber { background: linear-gradient(135deg, #FFC107, #FFD54F); }
+    .stat-info h3 { color: white; font-size: 2rem; margin-bottom: 0.3rem; }
+    .stat-info p { color: rgba(255,255,255,0.6); font-size: 0.9rem; text-transform: uppercase; }
+    
+    .card { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2rem; overflow: hidden; }
+    .card-header { padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+    .card-header h3 { color: white; }
+    .add-btn { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+    
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 1rem 1.5rem; text-align: right; }
+    th { background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.7); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+    td { color: rgba(255,255,255,0.85); border-bottom: 1px solid rgba(255,255,255,0.03); }
+    tr:hover td { background: rgba(255,107,53,0.05); }
+    
+    .status-badge { padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+    .status-active, .status-working { background: linear-gradient(135deg, rgba(76,175,80,0.2), rgba(76,175,80,0.1)); color: #4CAF50; border: 1px solid rgba(76,175,80,0.3); }
+    .status-inactive { background: linear-gradient(135deg, rgba(244,67,54,0.2), rgba(244,67,54,0.1)); color: #F44336; border: 1px solid rgba(244,67,54,0.3); }
+    .status-pending { background: linear-gradient(135deg, rgba(255,193,7,0.2), rgba(255,193,7,0.1)); color: #FFC107; border: 1px solid rgba(255,193,7,0.3); }
+    
+    .action-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn-edit, .btn-delete, .btn-view { padding: 0.5rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+    .btn-edit { background: linear-gradient(135deg, #2196F3, #64B5F6); color: white; }
+    .btn-delete { background: linear-gradient(135deg, #F44336, #EF5350); color: white; }
+    .btn-view { background: linear-gradient(135deg, #9C27B0, #BA68C8); color: white; }
+    
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+    .modal.show { display: flex; }
+    .modal-content { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 2rem; border-radius: 24px; width: 100%; max-width: 600px; border: 1px solid rgba(255,255,255,0.1); max-height: 90vh; overflow-y: auto; }
+    .modal h2 { color: white; margin-bottom: 1.5rem; }
+    
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 1rem; border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; background: rgba(0,0,0,0.3); color: white; font-size: 1rem; font-family: inherit; }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #FF6B35; }
+    .modal-btns { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    .modal-btns button { flex: 1; padding: 1rem; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 1rem; }
+    .btn-save { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+    .btn-cancel { background: rgba(255,255,255,0.1); color: white; }
+    
+    .empty-state { text-align: center; padding: 3rem; color: rgba(255,255,255,0.5); }
+    .assistant-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 16px; padding: 1.5rem; margin: 1rem; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 1.5rem; transition: all 0.3s; }
+    .assistant-card:hover { transform: translateX(10px); border-color: rgba(255,107,53,0.3); }
+    .assistant-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #FF6B35, #ff8f5a); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; flex-shrink: 0; }
+    .assistant-info { flex: 1; }
+    .assistant-name { color: white; font-size: 1.3rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .assistant-role { color: #FF6B35; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .assistant-details { color: rgba(255,255,255,0.7); font-size: 0.85rem; }
+    .assistant-actions { display: flex; flex-direction: column; gap: 0.5rem; }
+    .schedule-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .schedule-tag { background: rgba(255,107,53,0.2); color: #FF6B35; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.75rem; }
+    .search-box { margin-bottom: 1.5rem; }
+    .search-box input { width: 100%; max-width: 400px; padding: 1rem 1.5rem; border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; background: rgba(0,0,0,0.3); color: white; font-size: 1rem; }
+    .search-box input::placeholder { color: rgba(255,255,255,0.4); }
+    .search-box input:focus { outline: none; border-color: #FF6B35; }
+    .filter-buttons { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .filter-btn { padding: 0.6rem 1.2rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.3s; }
+    .filter-btn.active, .filter-btn:hover { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; border-color: transparent; }
+    
+    @media (max-width: 768px) {
+      .admin-container { flex-direction: column; }
+      .sidebar { width: 100%; padding: 1rem; }
+      .menu { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .assistant-card { flex-direction: column; text-align: center; }
+      .assistant-actions { flex-direction: row; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <aside class="sidebar">
+      <div class="logo">Al-Daoudi Club</div>
+      <ul class="menu">
+        <li><a href="admin.html">📊 لوحة التحكم</a></li>
+        <li><a href="admin-members.html">👥 الأعضاء</a></li>
+        <li><a href="admin-classes.html">🏋️ الحصص</a></li>
+        <li><a href="admin-memberships.html">💳 الاشتراكات</a></li>
+        <li><a href="admin-bookings.html">📅 الحجوزات</a></li>
+        <li><a href="#" class="active">👨‍🏫 المساعدين</a></li>
+        <li><a href="messages.html">📩 الرسائل</a></li>
+        <li><a href="index.html">🏠 الموقع</a></li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <div class="header">
+        <h1>👨‍🏫 إدارة المساعدين والمدربين</h1>
+        <button class="logout-btn" onclick="logout()">🚪 تسجيل خروج</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon purple">👨‍🏫</div>
+          <div class="stat-info">
+            <h3 id="total-assistants">0</h3>
+            <p>إجمالي المساعدين</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">✅</div>
+          <div class="stat-info">
+            <h3 id="active-assistants">0</h3>
+            <p>نشطون</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">🏋️</div>
+          <div class="stat-info">
+            <h3 id="total-classes">0</h3>
+            <p>الحصص المكلف بها</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon amber">⏰</div>
+          <div class="stat-info">
+            <h3 id="hours-count">0</h3>
+            <p>ساعات العمل الأسبوعية</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="🔍 البحث عن مساعد..." onkeyup="filterAssistants()">
+      </div>
+      
+      <div class="filter-buttons">
+        <button class="filter-btn active" onclick="filterByStatus('all')">الكل</button>
+        <button class="filter-btn" onclick="filterByStatus('active')">نشطون</button>
+        <button class="filter-btn" onclick="filterByStatus('inactive')">إجازة</button>
+        <button class="filter-btn" onclick="filterByStatus('pending')">جديد</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>👨‍🏫 قائمة المساعدين والمدربين</h3>
+          <button class="add-btn" onclick="openModal('assistant')">➕ إضافة مساعد جديد</button>
+        </div>
+        <div id="assistants-list"></div>
+      </div>
+    </main>
+  </div>
+
+  <div id="modal-assistant" class="modal">
+    <div class="modal-content">
+      <h2 id="modal-title">➕ إضافة مساعد جديد</h2>
+      <form id="form-assistant" onsubmit="saveAssistant(event)">
+        <input type="hidden" id="assistant-id">
+        
+        <div class="form-group">
+          <label>الاسم الكامل</label>
+          <input type="text" id="assistant-name" required>
+        </div>
+        
+        <div class="form-group">
+          <label>الدور والمسمي الوظيفي</label>
+          <select id="assistant-role" required>
+            <option value="مساعد مدرب">مساعد مدرب</option>
+            <option value="مدرب لياقة">مدرب لياقة</option>
+            <option value="مدرب Yoga">مدرب Yoga</option>
+            <option value="مدرب HIIT">مدرب HIIT</option>
+            <option value="مساعد إدارة">مساعد إدارة</option>
+            <option value="مشرف صالة">مشرف صالة</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>رقم الهاتف</label>
+          <input type="tel" id="assistant-phone" required>
+        </div>
+        
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="assistant-email">
+        </div>
+        
+        <div class="form-group">
+          <label>سنوات الخبرة</label>
+          <input type="number" id="assistant-experience" min="0" max="20">
+        </div>
+        
+        <div class="form-group">
+          <label>التخصص</label>
+          <input type="text" id="assistant-specialty" placeholder="مثال: كمال الأجسام، cardio، yoga">
+        </div>
+        
+        <div class="form-group">
+          <label>الحالة</label>
+          <select id="assistant-status">
+            <option value="active">نشط</option>
+            <option value="inactive">في إجازة</option>
+            <option value="pending">جديد (بانتظار)</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>أيام العمل (افصل بينها بفواصل)</label>
+          <input type="text" id="assistant-workdays" placeholder="الاثنين, الثلاثاء, الأربعاء">
+        </div>
+        
+        <div class="form-group">
+          <label>موعد العمل (من - إلى)</label>
+          <div style="display: flex; gap: 1rem;">
+            <input type="time" id="assistant-start-time" style="flex:1">
+            <input type="time" id="assistant-end-time" style="flex:1">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>ملاحظات إضافية</label>
+          <textarea id="assistant-notes" placeholder="أي ملاحظات حول المساعد..."></textarea>
+        </div>
+        
+        <div class="modal-btns">
+          <button type="button" class="btn-cancel" onclick="closeModal('assistant')">إلغاء</button>
+          <button type="submit" class="btn-save">💾 حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    if (localStorage.getItem('gym_admin_logged') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    let assistants = JSON.parse(localStorage.getItem('gym_assistants')) || [
+      { id: 1, name: 'أحمد Петрович', role: 'مساعد مدرب', phone: '0555123456', email: 'ahmed@coach.com', experience: 3, specialty: 'كمال الأجسام', status: 'active', workdays: 'الاثنين, الثلاثاء, الخميس', startTime: '06:00', endTime: '14:00', notes: 'خبرة في تدريب المبتدئين' },
+      { id: 2, name: 'محمد نور الدين', role: 'مدرب لياقة', phone: '0555123457', email: 'mohamed@fitness.com', experience: 5, specialty: ' cardio و HIIT', status: 'active', workdays: 'الاثنين, الثلاثاء, الأربعاء, الخميس', startTime: '14:00', endTime: '22:00', notes: 'متخصص في تمارين cardio' },
+      { id: 3, name: 'سارة عبد الله', role: 'مدرب Yoga', phone: '0555123458', email: 'sara@yoga.com', experience: 4, specialty: 'Yoga و Pilates', status: 'active', workdays: 'الأربعاء, الجمعة, السبت', startTime: '08:00', endTime: '16:00', notes: 'مدربة معتمدة دولياً' },
+      { id: 4, name: 'خالد إبراهيم', role: 'مشرف صالة', phone: '0555123459', email: 'khaled@gym.com', experience: 6, specialty: 'إدارة الصالة', status: 'active', workdays: 'الاثنين, الثلاثاء, الأربعاء, الخميس, الجمعة', startTime: '10:00', endTime: '22:00', notes: 'خبرة في إدارة النوادي الرياضية' }
+    ];
+    
+    let classes = JSON.parse(localStorage.getItem('gym_classes')) || [];
+
+    function saveData() {
+      localStorage.setItem('gym_assistants', JSON.stringify(assistants));
+    }
+
+    function loadAssistants() {
+      const container = document.getElementById('assistants-list');
+      const active = assistants.filter(a => a.status === 'active').length;
+      document.getElementById('total-assistants').textContent = assistants.length;
+      document.getElementById('active-assistants').textContent = active;
+      document.getElementById('total-classes').textContent = classes.length;
+      
+      let totalHours = 0;
+      assistants.forEach(a => {
+        if (a.startTime && a.endTime) {
+          const start = parseInt(a.startTime.split(':')[0]);
+          const end = parseInt(a.endTime.split(':')[0]);
+          totalHours += (end - start);
+        }
+      });
+      document.getElementById('hours-count').textContent = totalHours;
+      
+      if (assistants.length === 0) {
+        container.innerHTML = '<div class="empty-state">لا يوجد مساعدين حتى الآن</div>';
+        return;
+      }
+      
+      container.innerHTML = assistants.map(assistant => {
+        const roleIcon = getRoleIcon(assistant.role);
+        return `
+        <div class="assistant-card">
+          <div class="assistant-avatar">${roleIcon}</div>
+          <div class="assistant-info">
+            <div class="assistant-name">${assistant.name}</div>
+            <div class="assistant-role">${assistant.role}</div>
+            <div class="assistant-details">📱 ${assistant.phone} | ✉️ ${assistant.email || 'بدون'}</div>
+            <div class="assistant-details">🎯 التخصص: ${assistant.specialty || 'عام'} | 💼 الخبرة: ${assistant.experience || 0} سنوات</div>
+            <div class="schedule-tags">
+              <span class="schedule-tag">📅 ${assistant.workdays || 'غير محدد'}</span>
+              <span class="schedule-tag">🕐 ${assistant.startTime || '--'} - ${assistant.endTime || '--'}</span>
+            </div>
+          </div>
+          <div class="assistant-actions">
+            <button class="btn-edit" onclick="editAssistant(${assistant.id})">✏️ تعديل</button>
+            <button class="btn-delete" onclick="deleteAssistant(${assistant.id})">🗑️ حذف</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function getRoleIcon(role) {
+      const icons = { 'مساعد مدرب': '🏋️', 'مدرب لياقة': '💪', 'مدرب Yoga': '🧘', 'مدرب HIIT': '⚡', 'مساعد إدارة': '📋', 'مشرف صالة': '👁️' };
+      return icons[role] || '👨‍🏫';
+    }
+
+    function filterByStatus(status) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      const container = document.getElementById('assistants-list');
+      let filtered = status === 'all' ? assistants : assistants.filter(a => a.status === status);
+      
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state">لا يوجد مساعدين بهذه الحالة</div>';
+        return;
+      }
+      
+      container.innerHTML = filtered.map(assistant => {
+        const roleIcon = getRoleIcon(assistant.role);
+        return `<div class="assistant-card">
+          <div class="assistant-avatar">${roleIcon}</div>
+          <div class="assistant-info">
+            <div class="assistant-name">${assistant.name}</div>
+            <div class="assistant-role">${assistant.role}</div>
+            <div class="assistant-details">📱 ${assistant.phone}</div>
+            <div class="schedule-tags"><span class="schedule-tag">📅 ${assistant.workdays || 'غير محدد'}</span></div>
+          </div>
+          <div class="assistant-actions">
+            <button class="btn-edit" onclick="editAssistant(${assistant.id})">✏️</button>
+            <button class="btn-delete" onclick="deleteAssistant(${assistant.id})">🗑️</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function filterAssistants() {
+      const search = document.getElementById('search-input').value.toLowerCase();
+      const filtered = assistants.filter(a => a.name.toLowerCase().includes(search) || a.role.toLowerCase().includes(search) || a.phone.includes(search));
+      const container = document.getElementById('assistants-list');
+      
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state">لا توجد نتائج للبحث</div>';
+        return;
+      }
+      
+      container.innerHTML = filtered.map(assistant => {
+        const roleIcon = getRoleIcon(assistant.role);
+        return `<div class="assistant-card">
+          <div class="assistant-avatar">${roleIcon}</div>
+          <div class="assistant-info">
+            <div class="assistant-name">${assistant.name}</div>
+            <div class="assistant-role">${assistant.role}</div>
+            <div class="assistant-details">📱 ${assistant.phone}</div>
+          </div>
+          <div class="assistant-actions">
+            <button class="btn-edit" onclick="editAssistant(${assistant.id})">✏️</button>
+            <button class="btn-delete" onclick="deleteAssistant(${assistant.id})">🗑️</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function openModal(type) {
+      document.getElementById('modal-' + type).classList.add('show');
+    }
+    
+    function closeModal(type) {
+      document.getElementById('modal-' + type).classList.remove('show');
+      const form = document.getElementById('form-' + type);
+      if (form) form.reset();
+      document.getElementById('assistant-id').value = '';
+      document.getElementById('modal-title').textContent = '➕ إضافة مساعد جديد';
+    }
+
+    function saveAssistant(e) {
+      e.preventDefault();
+      const id = document.getElementById('assistant-id').value;
+      const assistant = {
+        id: id ? parseInt(id) : Date.now(),
+        name: document.getElementById('assistant-name').value,
+        role: document.getElementById('assistant-role').value,
+        phone: document.getElementById('assistant-phone').value,
+        email: document.getElementById('assistant-email').value,
+        experience: document.getElementById('assistant-experience').value,
+        specialty: document.getElementById('assistant-specialty').value,
+        status: document.getElementById('assistant-status').value,
+        workdays: document.getElementById('assistant-workdays').value,
+        startTime: document.getElementById('assistant-start-time').value,
+        endTime: document.getElementById('assistant-end-time').value,
+        notes: document.getElementById('assistant-notes').value
+      };
+      
+      if (id) {
+        const index = assistants.findIndex(a => a.id === parseInt(id));
+        if (index !== -1) assistants[index] = assistant;
+      } else {
+        assistants.push(assistant);
+      }
+      
+      saveData();
+      closeModal('assistant');
+      loadAssistants();
+      alert('✅ تم حفظ بيانات المساعد بنجاح!');
+    }
+
+    function editAssistant(id) {
+      const assistant = assistants.find(a => a.id === id);
+      if (assistant) {
+        document.getElementById('assistant-id').value = assistant.id;
+        document.getElementById('assistant-name').value = assistant.name;
+        document.getElementById('assistant-role').value = assistant.role;
+        document.getElementById('assistant-phone').value = assistant.phone;
+        document.getElementById('assistant-email').value = assistant.email || '';
+        document.getElementById('assistant-experience').value = assistant.experience || '';
+        document.getElementById('assistant-specialty').value = assistant.specialty || '';
+        document.getElementById('assistant-status').value = assistant.status;
+        document.getElementById('assistant-workdays').value = assistant.workdays || '';
+        document.getElementById('assistant-start-time').value = assistant.startTime || '';
+        document.getElementById('assistant-end-time').value = assistant.endTime || '';
+        document.getElementById('assistant-notes').value = assistant.notes || '';
+        document.getElementById('modal-title').textContent = '✏️ تعديل بيانات المساعد';
+        openModal('assistant');
+      }
+    }
+
+    function deleteAssistant(id) {
+      if (confirm('هل أنت متأكد من حذف هذا المساعد؟')) {
+        assistants = assistants.filter(a => a.id !== id);
+        saveData();
+        loadAssistants();
+        alert('✅ تم حذف المساعد بنجاح!');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('gym_admin_logged');
+      localStorage.removeItem('gym_admin_user');
+      window.location.href = 'login.html';
+    }
+
+    loadAssistants();
+  </script>
+</body>
+</html>
+

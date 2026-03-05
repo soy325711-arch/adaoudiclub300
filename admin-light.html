@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookings Management - FitLife Gym</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+</head>
+<body>
+  <!-- Admin Layout -->
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-logo">Fit<span style="color: #FF6B35;">Life</span> Admin</div>
+      <ul class="admin-menu">
+        <li><a href="dashboard.html"><span class="material-icons">dashboard</span> Dashboard</a></li>
+        <li><a href="admin-members.html"><span class="material-icons">people</span> Members</a></li>
+        <li><a href="admin-classes.html"><span class="material-icons">fitness_center</span> Classes</a></li>
+        <li><a href="admin-bookings.html" class="active"><span class="material-icons">event</span> Bookings</a></li>
+        <li><a href="admin-memberships.html"><span class="material-icons">card_membership</span> Memberships</a></li>
+        <li><a href="index.html"><span class="material-icons">home</span> View Site</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="admin-header">
+        <h2>Bookings Management</h2>
+        <div class="admin-user">
+          <span>Welcome, Admin</span>
+          <button class="btn-logout" id="logout-btn">Logout</button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <div id="alert" class="alert"></div>
+
+        <!-- Bookings Table -->
+        <div class="data-card">
+          <div class="data-card-header">
+            <h3>All Bookings</h3>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Member</th>
+                <th>Class</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bookings-table">
+              <!-- Will be loaded dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/admin.js"></script>
+  <script>
+    let bookings = [];
+    
+    // Check auth using localStorage (simpler approach that works with the current login system)
+    const isAuthenticated = localStorage.getItem('gym_admin_logged') === 'true';
+    
+    if (!isAuthenticated) {
+      window.location.href = '/login.html';
+    } else {
+      loadBookings();
+    }
+
+    async function loadBookings() {
+      try {
+        const response = await fetch('/api/admin/bookings');
+        bookings = await response.json();
+        renderBookings(bookings);
+      } catch (error) {
+        console.error('Error loading bookings:', error);
+      }
+    }
+
+    function renderBookings(data) {
+      const tbody = document.getElementById('bookings-table');
+      tbody.innerHTML = '';
+      data.forEach(booking => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${booking.id}</td>
+          <td>${booking.member_name || 'N/A'}</td>
+          <td>${booking.class_name || 'N/A'}</td>
+          <td>${booking.booking_date}</td>
+          <td><span class="status-badge ${booking.status}">${booking.status}</span></td>
+          <td class="action-btns">
+            <button class="btn-edit" onclick="updateStatus(${booking.id}, 'confirmed')" ${booking.status === 'confirmed' ? 'disabled' : ''}>Confirm</button>
+            <button class="btn-delete" onclick="updateStatus(${booking.id}, 'cancelled')" ${booking.status === 'cancelled' ? 'disabled' : ''}>Cancel</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    async function updateStatus(id, status) {
+      try {
+        const response = await fetch(`/api/admin/bookings/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+
+        if (response.ok) {
+          showAlert(`Booking ${status} successfully!`, 'success');
+          loadBookings();
+        } else {
+          showAlert('Error updating booking', 'error');
+        }
+      } catch (error) {
+        showAlert('Error updating booking', 'error');
+      }
+    }
+
+    function showAlert(message, type) {
+      const alert = document.getElementById('alert');
+      alert.textContent = message;
+      alert.className = `alert show ${type}`;
+      setTimeout(() => alert.classList.remove('show'), 3000);
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      // Clear localStorage
+      localStorage.removeItem('gym_admin_logged');
+      localStorage.removeItem('gym_admin_user');
+      localStorage.removeItem('gym_user_type');
+      await fetch('/api/admin/logout', { method: 'POST' });
+      window.location.href = '/login.html';
+    });
+  </script>
+</body>
+</html>

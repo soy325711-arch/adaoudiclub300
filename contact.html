@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم المساعد - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin-styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); min-height: 100vh; }
+    
+    .admin-container { display: flex; min-height: 100vh; }
+    
+    .sidebar { width: 280px; background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%); padding: 2rem 1rem; color: white; box-shadow: 4px 0 20px rgba(0,0,0,0.3); }
+    .logo { text-align: center; font-size: 1.8rem; font-weight: bold; margin-bottom: 2rem; background: linear-gradient(135deg, #FF6B35, #ff8f5a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .menu { list-style: none; }
+    .menu li { margin-bottom: 0.5rem; }
+    .menu a { display: flex; align-items: center; gap: 1rem; padding: 1rem; color: #aaa; text-decoration: none; border-radius: 12px; transition: all 0.3s; }
+    .menu a:hover, .menu a.active { background: linear-gradient(135deg, #FF6B35, #10f608); color: white; }
+    
+    .main { flex: 1; padding: 2rem; overflow-y: auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .header h1 { color: white; font-size: 1.8rem; }
+    .logout-btn { background: linear-gradient(135deg, #0e15e3, #E57373); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; font-weight: 600; }
+    
+    .welcome-banner {
+      background: linear-gradient(135deg, #2196F3, #1976D2);
+      padding: 2rem;
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .welcome-banner h2 { color: white; margin-bottom: 0.5rem; }
+    .welcome-banner p { color: rgba(255,255,255,0.8); }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 1.8rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 1.5rem; transition: all 0.3s; }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .stat-icon { width: 65px; height: 65px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+    .stat-icon.orange { background: linear-gradient(135deg, #FF6B35, #ff8f5a); }
+    .stat-icon.green { background: linear-gradient(135deg, #4CAF50, #81C784); }
+    .stat-icon.blue { background: linear-gradient(135deg, #2196F3, #64B5F6); }
+    .stat-icon.purple { background: linear-gradient(135deg, #9C27B0, #BA68C8); }
+    .stat-info h3 { color: white; font-size: 2rem; margin-bottom: 0.3rem; }
+    .stat-info p { color: rgba(255,255,255,0.6); font-size: 0.9rem; text-transform: uppercase; }
+    
+    .card { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2rem; overflow: hidden; }
+    .card-header { padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+    .card-header h3 { color: white; }
+    
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 1rem 1.5rem; text-align: right; }
+    th { background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.7); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+    td { color: rgba(255,255,255,0.85); border-bottom: 1px solid rgba(255,255,255,0.03); }
+    tr:hover td { background: rgba(255,107,53,0.05); }
+    
+    .status-badge { padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+    .status-active { background: linear-gradient(135deg, rgba(76,175,80,0.2), rgba(76,175,80,0.1)); color: #4CAF50; border: 1px solid rgba(76,175,80,0.3); }
+    .status-pending { background: linear-gradient(135deg, rgba(255,193,7,0.2), rgba(255,193,7,0.1)); color: #FFC107; border: 1px solid rgba(255,193,7,0.3); }
+    
+    .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .quick-action-btn { background: linear-gradient(135deg, #1a1a2e, #16213e); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem; cursor: pointer; transition: all 0.3s; text-align: center; color: white; }
+    .quick-action-btn:hover { background: linear-gradient(135deg, #2196F3, #1976D2); transform: translateY(-3px); }
+    .quick-action-btn .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .quick-action-btn .label { font-weight: 600; }
+    
+    .info-box {
+      background: linear-gradient(135deg, rgba(33,150,243,0.1), rgba(33,150,243,0.05));
+      border: 1px solid rgba(33,150,243,0.3);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    .info-box h4 { color: #2196F3; margin-bottom: 0.5rem; }
+    .info-box p { color: rgba(255,255,255,0.7); line-height: 1.6; }
+    
+    .empty-state { text-align: center; padding: 3rem; color: rgba(255,255,255,0.5); }
+    
+    /* Navigation Buttons - Scroll Up/Down */
+    .nav-buttons {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
+    }
+    
+    .nav-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    .nav-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    .nav-btn.scroll-up { background: linear-gradient(135deg, #2196F3, #1976D2); color: white; }
+    .nav-btn.scroll-down { background: linear-gradient(135deg, #FF6B35, #ff8f5a); color: white; }
+    .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    @media (max-width: 768px) {
+      .admin-container { flex-direction: column; }
+      .sidebar { width: 100%; padding: 1rem; }
+      .menu { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <aside class="sidebar">
+      <div class="logo">💪 Al-Daoudi Club</div>
+      <div style="text-align: center; margin-bottom: 1rem; padding: 1rem; background: rgba(33,150,243,0.1); border-radius: 12px;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏋️</div>
+        <div style="color: #2196F3; font-weight: bold;" id="assistant-name">مساعد</div>
+        <div style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">مساعد/مدرب</div>
+      </div>
+      <ul class="menu">
+        <li><a href="#" class="active" onclick="showPage('dashboard')">📊 الرئيسية</a></li>
+        <li><a href="#" onclick="showPage('members')">👥 الأعضاء</a></li>
+        <li><a href="#" onclick="showPage('classes')">🏋️ الحصص</a></li>
+        <li><a href="#" onclick="showPage('attendance')">✅ تسجيل الحضور</a></li>
+      <li><a href="#" onclick="showPage('subscriptions')">📝 طلبات الاشتراك</a></li>
+        <li><a href="#" onclick="showPage('messages')">📩 الرسائل</a></li>
+        <li><a href="index.html">🏠 الموقع</a></li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <div class="header">
+        <h1 id="page-title">🏋️ لوحة تحكم المساعد</h1>
+        <button class="logout-btn" onclick="logout()">🚪 تسجيل خروج</button>
+      </div>
+
+      <!-- Dashboard Page -->
+      <div id="page-dashboard">
+        <div class="welcome-banner">
+          <h2>مرحباً بك <span id="welcome-name">مساعد</span>! 👋</h2>
+          <p>هذه لوحة تحكم المساعدين. يمكنك عرض الأعضاء والحصص وتسجيل الحضور.</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon orange">👥</div>
+            <div class="stat-info">
+              <h3 id="total-members">0</h3>
+              <p>إجمالي الأعضاء</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">🏋️</div>
+            <div class="stat-info">
+              <h3 id="total-classes">0</h3>
+              <p>الحصص اليوم</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">✅</div>
+            <div class="stat-info">
+              <h3 id="today-attendance">0</h3>
+              <p>حضروا اليوم</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="quick-action-btn" onclick="showPage('attendance')">
+            <div class="icon">✅</div>
+            <div class="label">تسجيل حضور</div>
+          </button>
+          <button class="quick-action-btn" onclick="showPage('members')">
+            <div class="icon">👥</div>
+            <div class="label">عرض الأعضاء</div>
+          </button>
+          <button class="quick-action-btn" onclick="showPage('classes')">
+            <div class="icon">🏋️</div>
+            <div class="label">الحصص</div>
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>ℹ️ معلومات للمساعدين</h3>
+          </div>
+          <div style="padding: 1.5rem;">
+            <div class="info-box">
+              <h4>👨‍💼_manager - كلمة المرور: fitness2026@</h4>
+              <p>هذه بيانات تسجيل دخول المدير (لوحة التحكم الكاملة)</p>
+            </div>
+            <div class="info-box">
+              <h4>🏋️ أي اسم مستخدم مقبول</h4>
+              <p>يمكنك تسجيل الدخول كمساعد/مدرب باستخدام أي اسم مستخدم وكلمة المرور: clubfitness2026@</p>
+            </div>
+            <div class="info-box">
+              <h4>📋 الصلاحيات المحدودة</h4>
+              <p>بصفتك مساعداً، يمكنك فقط عرض الأعضاء والحصص وتسجيل الحضور. لا يمكنك حذف أو تعديل البيانات.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>👥 أحدث الأعضاء</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>الباقة</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="recent-members">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Members Page -->
+      <div id="page-members" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>👥 قائمة الأعضاء</h3>
+            <input type="text" id="search-members" placeholder="🔍 بحث..." style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;" onkeyup="searchMembers()">
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>الاسم</th>
+                <th>العمر</th>
+                <th>البريد الإلكتروني</th>
+                <th>الهاتف</th>
+                <th>الباقة</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="all-members-table">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Classes Page -->
+      <div id="page-classes" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>🏋️ جدول الحصص</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>اسم الحصة</th>
+                <th>المدرب</th>
+                <th>اليوم</th>
+                <th>الوقت</th>
+                <th>المدة</th>
+              </tr>
+            </thead>
+            <tbody id="classes-table">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Attendance Page -->
+      <div id="page-attendance" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>✅ تسجيل حضور الأعضاء</h3>
+          </div>
+          <div style="padding: 1.5rem;">
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label style="display: block; color: white; margin-bottom: 0.5rem; font-weight: 600;">اختر العضو</label>
+              <select id="attendance-member" style="width: 100%; padding: 1rem; border-radius: 12px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; font-size: 1rem;">
+                <option value="">اختر العضو...</option>
+              </select>
+            </div>
+            <button class="btn-primary" onclick="recordAttendance()" style="width: 100%; padding: 1rem; font-size: 1.1rem; background: linear-gradient(135deg, #4CAF50, #81C784); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer;">✅ تسجيل حضور</button>
+            
+            <div style="margin-top: 2rem;">
+              <h4 style="color: white; margin-bottom: 1rem;">📋 الحضور اليوم</h4>
+              <div id="today-attendance-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscriptions Page -->
+      <div id="page-subscriptions" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>📝 طلبات الاشتراك الجديدة</h3>
+            <span id="pending-subscriptions-count" style="background: #FF6B35; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">0 طلب</span>
+          </div>
+          <div id="subscriptions-list">
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Page -->
+      <div id="page-messages" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>📩 الرسائل الواردة</h3>
+            <span id="unread-messages-count" style="background: #2196F3; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">0 رسالة غير مقروءة</span>
+          </div>
+          <div style="padding: 1rem;">
+            <input type="text" id="search-messages" placeholder="🔍 البحث في الرسائل..." style="width: 100%; max-width: 400px; padding: 0.8rem 1rem; border-radius: 10px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; margin-bottom: 1rem;" onkeyup="searchMessages()">
+          </div>
+          <div id="messages-list">
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Check if logged in as assistant
+    if (localStorage.getItem('gym_assistant_logged') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    // Get assistant name
+    const assistantName = localStorage.getItem('gym_assistant_name') || 'مساعد';
+    document.getElementById('assistant-name').textContent = assistantName;
+    document.getElementById('welcome-name').textContent = assistantName;
+
+    // Load data
+    let members = JSON.parse(localStorage.getItem('gym_members')) || [];
+    let classes = JSON.parse(localStorage.getItem('gym_classes')) || [];
+    let attendance = JSON.parse(localStorage.getItem('gym_attendance')) || [];
+
+    function saveData() {
+      localStorage.setItem('gym_attendance', JSON.stringify(attendance));
+    }
+
+    function loadDashboard() {
+      document.getElementById('total-members').textContent = members.length;
+      
+      // Today's classes
+      const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+      const todayClasses = classes.filter(c => c.day === today);
+      document.getElementById('total-classes').textContent = todayClasses.length;
+      
+      // Today's attendance
+      const todayStr = new Date().toISOString().split('T')[0];
+      const todayAttendance = attendance.filter(a => a.date === todayStr);
+      document.getElementById('today-attendance').textContent = todayAttendance.length;
+      
+      // Recent members
+      const tbody = document.getElementById('recent-members');
+      tbody.innerHTML = members.slice(0, 5).map(m => `
+        <tr>
+          <td>${m.name}</td>
+          <td>${m.membership}</td>
+          <td><span class="status-badge status-${m.status}">${m.status === 'active' ? 'نشط' : 'غير نشط'}</span></td>
+        </tr>
+      `).join('') || '<tr><td colspan="3" class="empty-state">لا توجد بيانات</td></tr>';
+    }
+
+    function loadMembers() {
+      const tbody = document.getElementById('all-members-table');
+      tbody.innerHTML = members.map((m, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${m.name}</td>
+          <td>${m.age || '-'}</td>
+          <td>${m.email}</td>
+          <td>${m.phone || '-'}</td>
+          <td>${m.membership}</td>
+          <td><span class="status-badge status-${m.status}">${m.status === 'active' ? 'نشط' : 'غير نشط'}</span></td>
+        </tr>
+      `).join('') || '<tr><td colspan="7" class="empty-state">لا توجد بيانات</td></tr>';
+    }
+
+    function loadClasses() {
+      const tbody = document.getElementById('classes-table');
+      tbody.innerHTML = classes.map(c => `
+        <tr>
+          <td>${c.name}</td>
+          <td>${c.instructor}</td>
+          <td>${c.day}</td>
+          <td>${c.time}</td>
+          <td>${c.duration} دقيقة</td>
+        </tr>
+      `).join('') || '<tr><td colspan="5" class="empty-state">لا توجد حصص</td></tr>';
+    }
+
+    function loadAttendance() {
+      // Populate member dropdown
+      const select = document.getElementById('attendance-member');
+      select.innerHTML = '<option value="">اختر العضو...</option>' + 
+        members.filter(m => m.status === 'active').map(m => 
+          `<option value="${m.id}">${m.name} - ${m.membership}</option>`
+        ).join('');
+      
+      // Today's attendance list
+      const todayStr = new Date().toISOString().split('T')[0];
+      const todayAttendance = attendance.filter(a => a.date === todayStr);
+      
+      const list = document.getElementById('today-attendance-list');
+      if (todayAttendance.length === 0) {
+        list.innerHTML = '<div class="empty-state">لا يوجد حضور اليوم</div>';
+      } else {
+        list.innerHTML = todayAttendance.map(a => `
+          <div style="padding: 1rem; background: rgba(76,175,80,0.1); border-radius: 8px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: white;">${a.memberName}</span>
+            <span style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">${a.time}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function recordAttendance() {
+      const memberId = document.getElementById('attendance-member').value;
+      if (!memberId) {
+        alert('الرجاء اختيار العضو');
+        return;
+      }
+      
+      const member = members.find(m => m.id == memberId);
+      if (!member) {
+        alert('العضو غير موجود');
+        return;
+      }
+      
+      const todayStr = new Date().toISOString().split('T')[0];
+      const now = new Date().toLocaleTimeString('ar');
+      
+      // Check if already recorded
+      const alreadyRecorded = attendance.some(a => a.memberId == memberId && a.date === todayStr);
+      if (alreadyRecorded) {
+        alert('تم تسجيل حضور هذا العضو مسبقاً اليوم!');
+        return;
+      }
+      
+      attendance.push({
+        id: Date.now(),
+        memberId: memberId,
+        memberName: member.name,
+        date: todayStr,
+        time: now
+      });
+      
+      saveData();
+      loadAttendance();
+      loadDashboard();
+      alert('✅ تم تسجيل حضور ' + member.name + ' بنجاح!');
+    }
+
+    function searchMembers() {
+      const search = document.getElementById('search-members').value.toLowerCase();
+      const filtered = members.filter(m => 
+        m.name.toLowerCase().includes(search) || 
+        m.email.toLowerCase().includes(search) ||
+        (m.phone && m.phone.includes(search))
+      );
+      
+      const tbody = document.getElementById('all-members-table');
+      tbody.innerHTML = filtered.map((m, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${m.name}</td>
+          <td>${m.age || '-'}</td>
+          <td>${m.email}</td>
+          <td>${m.phone || '-'}</td>
+          <td>${m.membership}</td>
+          <td><span class="status-badge status-${m.status}">${m.status === 'active' ? 'نشط' : 'غير نشط'}</span></td>
+        </tr>
+      `).join('') || '<tr><td colspan="7" class="empty-state">لا توجد نتائج</td></tr>';
+    }
+
+    function showPage(page) {
+      document.querySelectorAll('.main > div').forEach(div => div.style.display = 'none');
+      document.getElementById('page-' + page).style.display = 'block';
+      document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
+      event.target.classList.add('active');
+      
+    const titles = { 
+        dashboard: '🏋️ لوحة تحكم المساعد', 
+        members: '👥 الأعضاء', 
+        classes: '🏋️ الحصص', 
+        attendance: '✅ تسجيل الحضور',
+        subscriptions: '📝 طلبات الاشتراك',
+        messages: '📩 الرسائل'
+      };
+      document.getElementById('page-title').textContent = titles[page];
+      
+      if (page === 'dashboard') loadDashboard();
+      if (page === 'members') loadMembers();
+      if (page === 'classes') loadClasses();
+      if (page === 'attendance') loadAttendance();
+      if (page === 'subscriptions') loadSubscriptions();
+      if (page === 'messages') loadMessages();
+    }
+
+    function loadSubscriptions() {
+      const subscriptions = JSON.parse(localStorage.getItem('gym_subscriptions')) || [];
+      const pendingCount = subscriptions.filter(s => s.status === 'pending').length;
+      
+      document.getElementById('pending-subscriptions-count').textContent = pendingCount + ' طلب';
+      
+      const subscriptionsList = document.getElementById('subscriptions-list');
+      
+      if (subscriptions.length === 0) {
+        subscriptionsList.innerHTML = '<div class="empty-state">لا توجد طلبات اشتراك</div>';
+        return;
+      }
+      
+      subscriptionsList.innerHTML = subscriptions.map((sub, index) => {
+        const genderText = sub.gender === 'male' ? '👨' : '👩';
+        const packageText = sub.package === '1month' ? 'شهر واحد - 150 MAD' : 
+                          sub.package === '3months' ? 'ثلاثة أشهر - 350 MAD' : 
+                          'ستة أشهر - 600 MAD';
+        
+        const packageName = sub.package === '1month' ? 'شهر واحد' : 
+                          sub.package === '3months' ? 'ثلاثة أشهر' : 
+                          'ستة أشهر';
+        
+        const photoHtml = sub.photo 
+          ? `<img src="${sub.photo}" alt="Photo" style="width:50px;height:50px;border-radius:50%;object-fit:cover;">`
+          : `<div style="width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">${genderText}</div>`;
+        
+        const actionButtons = sub.status === 'pending' ? `
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+            <button onclick="approveSubscription(${index})" style="background:linear-gradient(135deg,#4CAF50,#81C784);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-weight:600;flex:1;">✅ قبول</button>
+            <button onclick="rejectSubscription(${index})" style="background:linear-gradient(135deg,#F44336,#E57373);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-weight:600;flex:1;">❌ رفض</button>
+          </div>
+        ` : '';
+        
+        return `
+        <div style="padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+            ${photoHtml}
+            <div>
+              <div style="color: white; font-weight: 600;">${sub.name || 'بدون اسم'} - ${sub.age || '-'} سنة</div>
+              <div style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">${sub.email} | ${sub.phone}</div>
+            </div>
+            <div style="margin-right: auto;">
+              <span style="background: ${sub.status === 'pending' ? 'rgba(255,193,7,0.2)' : sub.status === 'approved' ? 'rgba(76,175,80,0.2)' : 'rgba(244,67,54,0.2)'}; color: ${sub.status === 'pending' ? '#FFC107' : sub.status === 'approved' ? '#4CAF50' : '#F44336'}; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem;">${sub.status === 'pending' ? 'بانتظار' : sub.status === 'approved' ? 'تم القبول' : 'تم الرفض'}</span>
+              <div style="color: rgba(255,255,255,0.4); font-size: 0.75rem; margin-top: 0.3rem;">${new Date(sub.date).toLocaleDateString('ar')}</div>
+            </div>
+          </div>
+          <div style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem;">
+            <strong>الباقة المطلوبة:</strong> ${packageText}
+          </div>
+          ${actionButtons}
+        </div>
+      `}).join('');
+    }
+
+    function approveSubscription(index) {
+      const subscriptions = JSON.parse(localStorage.getItem('gym_subscriptions')) || [];
+      const sub = subscriptions[index];
+      
+      if (!sub) return;
+      
+      // Get current members
+      let members = JSON.parse(localStorage.getItem('gym_members')) || [];
+      
+      // Create new member from subscription
+      const newMember = {
+        id: Date.now(),
+        name: sub.name,
+        age: sub.age,
+        gender: sub.gender,
+        phone: sub.phone,
+        email: sub.email,
+        membership: sub.package === '1month' ? 'شهر واحد - 150 MAD' : 
+                   sub.package === '3months' ? 'ثلاثة أشهر - 350 MAD' : 
+                   'ستة أشهر - 600 MAD',
+        membershipType: sub.package,
+        joinDate: new Date().toISOString(),
+        status: 'active',
+        photo: sub.photo
+      };
+      
+      // Add to members
+      members.push(newMember);
+      localStorage.setItem('gym_members', JSON.stringify(members));
+      
+      // Update subscription status
+      subscriptions[index].status = 'approved';
+      localStorage.setItem('gym_subscriptions', JSON.stringify(subscriptions));
+      
+      // Refresh the list
+      loadSubscriptions();
+      alert('✅ تم قبول ' + sub.name + ' وإضافته للأعضاء بنجاح!');
+    }
+
+    function rejectSubscription(index) {
+      const subscriptions = JSON.parse(localStorage.getItem('gym_subscriptions')) || [];
+      const sub = subscriptions[index];
+      
+      if (!sub) return;
+      
+      if (confirm('هل أنت متأكد من رفض طلب ' + sub.name + '؟')) {
+        // Remove from subscriptions
+        subscriptions.splice(index, 1);
+        localStorage.setItem('gym_subscriptions', JSON.stringify(subscriptions));
+        
+        // Refresh the list
+        loadSubscriptions();
+        alert('❌ تم رفض طلب ' + sub.name + ' وحذفه');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('gym_assistant_logged');
+      localStorage.removeItem('gym_assistant_name');
+      localStorage.removeItem('gym_user_type');
+      window.location.href = 'login.html';
+    }
+
+    function loadMessages() {
+      const messages = JSON.parse(localStorage.getItem('gym_messages')) || [];
+      const unreadCount = messages.filter(m => m.status === 'unread').length;
+      
+      document.getElementById('unread-messages-count').textContent = unreadCount + ' رسالة غير مقروءة';
+      
+      const messagesList = document.getElementById('messages-list');
+      
+      if (messages.length === 0) {
+        messagesList.innerHTML = '<div class="empty-state">لا توجد رسائل</div>';
+        return;
+      }
+      
+      // Sort messages by date (newest first)
+      const sortedMessages = messages.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      messagesList.innerHTML = sortedMessages.map((msg, index) => {
+        const typeIcons = {
+          'استشارة': '💬',
+          'شكوى': '⚠️',
+          'اقتراح': '💡',
+          'استفسار': '❓',
+          'أخرى': '📝'
+        };
+        const icon = typeIcons[msg.type] || '📝';
+        const isUnread = msg.status === 'unread';
+        
+        return `
+        <div style="padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); ${isUnread ? 'background: rgba(33,150,243,0.1);' : ''}">
+          <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem;">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #2196F3, #1976D2); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">${icon}</div>
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <div style="color: white; font-weight: 600; font-size: 1.1rem;">${msg.name || 'بدون اسم'}</div>
+                <div>
+                  ${isUnread ? '<span style="background: #2196F3; color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.7rem; margin-left: 0.5rem;">جديد</span>' : ''}
+                  <span style="color: rgba(255,255,255,0.4); font-size: 0.75rem;">${new Date(msg.date).toLocaleDateString('ar')}</span>
+                </div>
+              </div>
+              <div style="color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-bottom: 0.3rem;">
+                📱 ${msg.phone || 'بدون هاتف'} | 📧 ${msg.email || 'بدون بريد'}
+              </div>
+              <div style="display: inline-block; background: rgba(255,107,53,0.2); color: #FF6B35; padding: 0.2rem 0.8rem; border-radius: 15px; font-size: 0.75rem; margin-bottom: 0.5rem;">
+                ${msg.type}
+              </div>
+            </div>
+          </div>
+          <div style="color: rgba(255,255,255,0.85); line-height: 1.6; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 12px;">
+            ${msg.message}
+          </div>
+          <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+<button onclick="viewMessage(${index})" style="background: linear-gradient(135deg, #2196F3, #1976D2); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem;">${isUnread ? 'تم' : 'عرض'}</button>
+            <a href="https://wa.me/${msg.phone ? msg.phone.replace(/[^0-9]/g, '') : ''}" target="_blank" style="background: linear-gradient(135deg, #25D366, #128C7E); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;">💬 واتساب</a>
+        </div>
+      `}).join('');
+    }
+
+    function searchMessages() {
+      const search = document.getElementById('search-messages').value.toLowerCase();
+      const messages = JSON.parse(localStorage.getItem('gym_messages')) || [];
+      const filtered = messages.filter(m => 
+        (m.name && m.name.toLowerCase().includes(search)) || 
+        (m.email && m.email.toLowerCase().includes(search)) ||
+        (m.phone && m.phone.includes(search)) ||
+        (m.message && m.message.toLowerCase().includes(search)) ||
+        (m.type && m.type.toLowerCase().includes(search))
+      );
+      
+      const messagesList = document.getElementById('messages-list');
+      
+      if (filtered.length === 0) {
+        messagesList.innerHTML = '<div class="empty-state">لا توجد نتائج</div>';
+        return;
+      }
+      
+      const sortedMessages = filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      messagesList.innerHTML = sortedMessages.map((msg, index) => {
+        const typeIcons = {
+          'استشارة': '💬',
+          'شكوى': '⚠️',
+          'اقتراح': '💡',
+          'استفسار': '❓',
+          'أخرى': '📝'
+        };
+        const icon = typeIcons[msg.type] || '📝';
+        const isUnread = msg.status === 'unread';
+        
+        return `
+        <div style="padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); ${isUnread ? 'background: rgba(33,150,243,0.1);' : ''}">
+          <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem;">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #2196F3, #1976D2); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">${icon}</div>
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <div style="color: white; font-weight: 600; font-size: 1.1rem;">${msg.name || 'بدون اسم'}</div>
+                <div>
+                  ${isUnread ? '<span style="background: #2196F3; color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.7rem; margin-left: 0.5rem;">جديد</span>' : ''}
+                  <span style="color: rgba(255,255,255,0.4); font-size: 0.75rem;">${new Date(msg.date).toLocaleDateString('ar')}</span>
+                </div>
+              </div>
+              <div style="color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-bottom: 0.3rem;">
+                📱 ${msg.phone || 'بدون هاتف'} | 📧 ${msg.email || 'بدون بريد'}
+              </div>
+              <div style="display: inline-block; background: rgba(255,107,53,0.2); color: #FF6B35; padding: 0.2rem 0.8rem; border-radius: 15px; font-size: 0.75rem; margin-bottom: 0.5rem;">
+                ${msg.type}
+              </div>
+            </div>
+          </div>
+          <div style="color: rgba(255,255,255,0.85); line-height: 1.6; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 12px;">
+            ${msg.message}
+          </div>
+        </div>
+      `}).join('');
+    }
+
+    function viewMessage(index) {
+      const messages = JSON.parse(localStorage.getItem('gym_messages')) || [];
+      if (messages[index]) {
+        messages[index].status = 'read';
+        localStorage.setItem('gym_messages', JSON.stringify(messages));
+        loadMessages();
+      }
+    }
+
+    // Initialize
+    loadDashboard();
+    
+    // Scroll Functions for navigation (up/down)
+    function scrollUp() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function scrollDown() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+  </script>
+  
+  <!-- Navigation Buttons -->
+  <div class="nav-buttons">
+    <button class="nav-btn scroll-up" onclick="scrollUp()" title="صعود للأعلى">▲</button>
+    <button class="nav-btn scroll-down" onclick="scrollDown()" title="هبوط للأسفل">▼</button>
+  </div>
+</body>
+</html>
+

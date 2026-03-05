@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الرسائل - Al-Daoudi Bodybuilding Club</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <style>
+    .messages-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+    }
+    
+    .message-box {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 24px;
+      padding: 2rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .message-box h2 {
+      color: white;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .message-box p {
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #FF6B35;
+    }
+    
+    .form-group textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: linear-gradient(135deg, #FF6B35, #ff8f5a);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255,107,53,0.3);
+    }
+    
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .success-message.show {
+      display: block;
+    }
+    
+    .success-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    
+    .success-message h3 {
+      color: #4CAF50;
+      margin-bottom: 0.5rem;
+    }
+    
+    .success-message p {
+      color: rgba(255,255,255,0.7);
+    }
+    
+    .navbar {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .logo span {
+      color: #FF6B35;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    
+    .nav-links a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: #FF6B35;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">Al-Daoudi<span>Club</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="services.html">الخدمات</a></li>
+      <li><a href="schedule.html">الجدول</a></li>
+      <li><a href="membership.html">الاشتراكات</a></li>
+      <li><a href="contact.html">اتصل بنا</a></li>
+      <li><a href="admin.html" style="color: #FF6B35;">لوحة التحكم</a></li>
+    </ul>
+  </nav>
+
+  <!-- Messages Section -->
+  <section class="section">
+    <div class="messages-container">
+      <div class="message-box">
+        <h2>📩 أرسل رسالة للمدير</h2>
+        <p>لديك سؤال أو استشارة؟ أرسل رسالة مباشرة للمدير وسيتم الرد عليك قريباً</p>
+        
+        <!-- Message Form -->
+        <form id="message-form">
+          <div class="form-group">
+            <label>الاسم الكامل *</label>
+            <input type="text" id="name" required placeholder="أدخل اسمك الكامل">
+          </div>
+          
+          <div class="form-group">
+            <label>رقم الهاتف *</label>
+            <input type="tel" id="phone" required placeholder="06 xx xxx xxx">
+          </div>
+          
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="email" placeholder="example@email.com">
+          </div>
+          
+          <div class="form-group">
+            <label>نوع الرسالة *</label>
+            <select id="message-type" required>
+              <option value="استشارة">استشارة</option>
+              <option value="شكوى">شكوى</option>
+              <option value="اقتراح">اقتراح</option>
+              <option value="استفسار">استفسار عام</option>
+              <option value="أخرى">أخرى</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>الرسالة *</label>
+            <textarea id="message" required placeholder="اكتب رسالتك هنا..."></textarea>
+          </div>
+          
+          <button type="submit" class="submit-btn">🚀 إرسال الرسالة</button>
+        </form>
+        
+        <!-- Success Message -->
+        <div class="success-message" id="success-message">
+          <div class="success-icon">✅</div>
+          <h3>تم إرسال رسالتك بنجاح!</h3>
+          <p>سيتم الرد على رسالتك في أقرب وقت ممكن</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Al-Daoudi Bodybuilding Club</h3>
+        <p>غير حياتك، غير مستقبلك.</p>
+      </div>
+      <div class="footer-section">
+        <h3>ساعات العمل</h3>
+        <p>الاثنين (الرجال): 6صباحاً - 12 ظهراً</p>
+        <p>الاثنين (النساء): 12 ظهراً - 4 عصراً</p>
+        <p>الثلاثاء - الجمعة: 6 صباحاً - 11 مساءً</p>
+        <p>السبت - الأحد: 8 صباحاً - 8 مساءً</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Al-Daoudi Bodybuilding Club. جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Handle form submission
+    document.getElementById('message-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const email = document.getElementById('email').value;
+      const messageType = document.getElementById('message-type').value;
+      const message = document.getElementById('message').value;
+      
+      // Create message object
+      const messageData = {
+        id: Date.now(),
+        name: name,
+        phone: phone,
+        email: email,
+        type: messageType,
+        message: message,
+        date: new Date().toISOString(),
+        status: 'unread',
+        toAdmin: true
+      };
+      
+      // Get existing messages
+      let messages = JSON.parse(localStorage.getItem('gym_messages')) || [];
+      messages.push(messageData);
+      localStorage.setItem('gym_messages', JSON.stringify(messages));
+      
+      // Show success message
+      document.getElementById('message-form').style.display = 'none';
+      document.getElementById('success-message').classList.add('show');
+    });
+  </script>
+</body>
+</html>
